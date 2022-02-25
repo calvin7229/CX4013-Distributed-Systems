@@ -23,14 +23,15 @@ class Account {
         int accountNumber;
 
     public:
-        Account(std::string _name, std::string _password, Currency _currency, float _balance, int _accountNumber);
+        Account(std::string name, std::string password, Currency currency, float balance, int accountNumber);
 
         std::string getName();
         std::string getPassword();
-        int getBalance();
+        Currency getCurrency();
+        float getBalance();
         int getAccountNumber();     
 
         void changePassword(std::string newPassword);
-        void depositMoney(float amount);
-        void withdrawMoney(float amount);        
+        std::pair<Currency, float> depositMoney(float amount);
+        std::pair<Currency, float> withdrawMoney(float amount);        
 };
