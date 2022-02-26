@@ -3,17 +3,17 @@
 #include <iostream>
 
 int main() {
-    int x = 1024;
-    char bytes[4];
+    std::string x = "Hello World!";
+    char bytes[x.size()];
 
-    transform::marshalInt(x, bytes);
+    transform::marshalString(x, bytes);
 
-    for (int i = 0; i < 4; i++) {
-        printf("%d ", bytes[i]);
-    }
-    std::string s = "Hello";
+    std::string y = transform::unmarshalString(bytes, x.size());
+    // for (int i = 0; i < 4; i++) {
+    //     printf("%d ", bytes[i]);
+    // }
 
-    std::cout << sizeof(s[0]) << std::endl;
+    std::cout << "x: " << x << ", y: " << y << std::endl;
 
     return 0;
 }

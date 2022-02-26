@@ -15,5 +15,5 @@ namespace transform {
 
     int unmarshalInt(char* bytes);
     float unmarshalFloat(char* bytes);
-    std::string unmarshalString(char* bytes);
+    std::string unmarshalString(char* bytes, int length);
 }

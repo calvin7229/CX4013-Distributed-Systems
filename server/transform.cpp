@@ -34,3 +34,29 @@ void transform::marshalString(std::string input, char* bytes) {
     }
 }
 
+// Function to transform marshalled data into an integer value
+int transform::unmarshalInt(char* bytes) {
+    int output = 0, index = 0;
+
+    for (int shift = 24; shift >= 0; shift -= 8) {
+        output |= ((*(bytes + index) & 0xFF) << shift);
+        index++;
+    }
+
+    return output;
+}
+
+// Function to transform marshalled data into a float value
+float transform::unmarshalFloat(char* bytes) {
+    float output;
+
+    int integerRep = transform::unmarshalInt(bytes);
+    memcpy(&output, &integerRep, 4);
+
+    return output;
+}
+
+// Function to transform marshalled data into a string value
+std::string transform::unmarshalString(char* bytes, int length) {
+    return std::string(bytes, length);
+}
