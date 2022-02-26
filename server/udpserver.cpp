@@ -35,7 +35,9 @@ UDPServer::UDPServer(int port) {
     this->serverAddr.sin_port = htons((unsigned short)this->port);
 
     // Bind the socket FD with the server address (which is LEN bytes long)
-    if (bind(this->sockfd, (const struct sockaddr*)&this->serverAddr, sizeof(this->serverAddr)) < 0) {
+    int bindStatus = bind(this->sockfd, (const sockaddr*)&this->serverAddr, sizeof(this->serverAddr));
+
+    if (bindStatus < 0) {
         std::cerr << ("Error: Unable To Bind Socket To Server Address") << std::endl;
         return;
     }
