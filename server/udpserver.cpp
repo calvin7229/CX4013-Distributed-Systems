@@ -46,7 +46,7 @@ UDPServer::UDPServer(int port) {
 }
 
 // Function to receive message on the server socket through UDP
-int UDPServer::receive(char* buffer, size_t bufferSize, int timeoutSecs) {
+int UDPServer::receive(char* buffer, size_t bufferSize, int timeoutSecs) /* throw(std::string) */ {
     timeval tv = {.tv_sec = timeoutSecs, .tv_usec = 0};
 
     /*
@@ -60,7 +60,9 @@ int UDPServer::receive(char* buffer, size_t bufferSize, int timeoutSecs) {
     int n = recvfrom(this->sockfd, buffer, bufferSize, 0, (sockaddr*)&this->clientAddr, (socklen_t*)&this->clientLen);
 
     if (n < 0) {
-        std::cerr << "Error: Unable To Receive Message From Client" << std::endl;
+        throw std::string("Error: Unable To Receive Message From Client");
+    } else if (n == 0) {
+        throw std::string("Error: No Message Received From Client");
     } else {
         std::cout << "Server Received " << n << " Bytes Of Data From Client" << std::endl;
     }
