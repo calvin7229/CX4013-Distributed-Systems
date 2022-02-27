@@ -10,14 +10,16 @@
 class Handler {
     private:
         AccountManager AM;
-
+        int responseID;
     
     public:
         Handler();
 
+        int getResponseID();
+
         void inquire(UDPServer& server);
         void answer(UDPServer& server, char* header, char* body);
-        void serviceOpen(UDPServer& server);
+        void serviceOpen(UDPServer& server, char* info, int requestID);
         void serviceClose(UDPServer& server);
         void serviceDeposit(UDPServer& server);
         void serviceWithdraw(UDPServer& server);

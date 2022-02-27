@@ -2,9 +2,17 @@
 
 using namespace constants;
 
+const int BASIC_RESPONSE_SIZE = ID_SIZE + ACK_SIZE + INT_SIZE;
+
 // Class constructor
 Handler::Handler() {
     AM = AccountManager();
+    responseID = 0;
+}
+
+// Getter: responseID
+int Handler::getResponseID() {
+    return this->responseID++;
 }
 
 // Function to inquire about client's request
@@ -42,7 +50,7 @@ void Handler::inquire(UDPServer& server) {
 
     switch (serviceType) {
         case 1:
-            serviceOpen(server);
+            serviceOpen(server, buffer, requestID);
             break;
         case 2:
             serviceClose(server);
@@ -66,4 +74,46 @@ void Handler::answer(UDPServer& server, char* header, char* body) {
 
     // Send body
     server.send(body, sizeof(body));
+}
+
+// Function to handle service: Open a new bank account
+void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
+    auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+
+    // Extract essential information to open an account
+    std::string name, password;
+    Currency currency;
+    float balance;
+    int n, temp;
+
+    n = transform::unmarshalInt(info);              info += INT_SIZE;
+    name = transform::unmarshalString(info, n);     info += n;
+
+    n = transform::unmarshalInt(info);              info += INT_SIZE;
+    password = transform::unmarshalString(info, n); info += n;
+
+    n = transform::unmarshalInt(info);              info += INT_SIZE;
+    temp = transform::unmarshalInt(info);           info += n;
+    currency = Account::getCurrency(temp);
+
+    n = transform::unmarshalInt(info);              info += INT_SIZE;
+    balance = transform::unmarshalFloat(info);      info += n;
+
+    // Create the account through Account Manager
+    int accountID = AM.createAccount(name, password, currency, balance);
+
+    // Prepare response message
+    int bodySize = BASIC_RESPONSE_SIZE + FLOAT_SIZE;
+    char header[HEADER_SIZE];
+    char body[bodySize];
+
+    transform::marshalInt(bodySize, header);
+    char* buffer = body;
+
+    transform::marshalInt(getResponseID(), buffer); buffer += ID_SIZE;
+    transform::marshalInt(ACK_SUCCESS, buffer);     buffer += ACK_SIZE;
+    transform::marshalInt(INT_SIZE, buffer);        buffer += INT_SIZE;
+    transform::marshalInt(accountID, buffer);       buffer += INT_SIZE;
+
+    answer(server, header, body);
 }

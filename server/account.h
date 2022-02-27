@@ -27,7 +27,9 @@ class Account {
 
         std::string getName();
         std::string getPassword();
+        std::string getCurrencyString();
         Currency getCurrency();
+        static Currency getCurrency(int index);
         float getBalance();
         int getAccountNumber();     
 

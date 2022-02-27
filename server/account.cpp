@@ -19,9 +19,35 @@ std::string Account::getPassword() {
     return this->password;
 }
 
+// Getter: currency (in type std::string) 
+std::string Account::getCurrencyString() {
+    std::string currency;
+    switch (this->currency) {
+        case SGD:
+            currency = "SGD";
+            break;
+        case MYR:
+            currency = "MYR";
+            break;
+        case GBP:
+            currency = "GBP";
+            break;
+        case USD:
+            currency = "USD";
+            break;
+    }
+
+    return currency;
+}
+
 // Getter: currency
 Currency Account::getCurrency() {
     return this->currency;
+}
+
+// Getter: currency (from integer index representation) 
+Currency Account::getCurrency(int index) {
+    return static_cast<Currency>(index);
 }
 
 // Getter: balance
