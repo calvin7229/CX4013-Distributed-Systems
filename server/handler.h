@@ -20,8 +20,8 @@ class Handler {
         void inquire(UDPServer& server);
         void answer(UDPServer& server, char* header, char* body);
         void serviceOpen(UDPServer& server, char* info, int requestID);
-        void serviceClose(UDPServer& server);
-        void serviceDeposit(UDPServer& server);
-        void serviceWithdraw(UDPServer& server);
-        void serviceChange(UDPServer& server);
+        void serviceClose(UDPServer& server, char* info, int requestID);
+        void serviceDeposit(UDPServer& server, char* info, int requestID);
+        void serviceWithdraw(UDPServer& server, char* info, int requestID);
+        void serviceChange(UDPServer& server, char* info, int requestID);
 };

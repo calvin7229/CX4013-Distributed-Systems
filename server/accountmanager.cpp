@@ -15,9 +15,9 @@ int AccountManager::createAccount(std::string name, std::string password, Curren
 }
 
 // Function to check if account details entered matches an existing account
-bool AccountManager::checkAccount(std::string name, std::string password, int accountNumber) /* throw(std::invalid_argument) */ {
-    if (this->activeAccounts.find(accountNumber) != this->activeAccounts.end()) {
-        Account* account = this->activeAccounts[accountNumber];
+bool AccountManager::checkAccount(std::string name, std::string password, int accountID) /* throw(std::invalid_argument) */ {
+    if (this->activeAccounts.find(accountID) != this->activeAccounts.end()) {
+        Account* account = this->activeAccounts[accountID];
         
         if (account->getName() != name) {
             throw std::invalid_argument("Invalid account name corresponding to account number!");
@@ -32,11 +32,11 @@ bool AccountManager::checkAccount(std::string name, std::string password, int ac
 }
 
 // Function to close(remove) an active account if it exists
-bool AccountManager::closeAccount(std::string name, std::string password, int accountNumber) /* throw(std::invalid_argument) */ {
+bool AccountManager::closeAccount(std::string name, std::string password, int accountID) /* throw(std::invalid_argument) */ {
     try
     {
-        if (AccountManager::checkAccount(name, password, accountNumber)) {
-            this->activeAccounts.erase(accountNumber);
+        if (AccountManager::checkAccount(name, password, accountID)) {
+            this->activeAccounts.erase(accountID);
             return true;
         }
     }
@@ -47,11 +47,11 @@ bool AccountManager::closeAccount(std::string name, std::string password, int ac
 }
 
 // Function to change the password of an active account if it exists
-bool AccountManager::changePassword(std::string name, std::string oldPassword, std::string newPassword, int accountNumber) /* throw(std::invalid_argument) */ {
+bool AccountManager::changePassword(std::string name, std::string oldPassword, std::string newPassword, int accountID) /* throw(std::invalid_argument) */ {
     try
     {
-        if (AccountManager::checkAccount(name, oldPassword, accountNumber)) {
-            this->activeAccounts[accountNumber]->changePassword(newPassword);
+        if (AccountManager::checkAccount(name, oldPassword, accountID)) {
+            this->activeAccounts[accountID]->changePassword(newPassword);
             return true;
         }
     }
@@ -62,11 +62,11 @@ bool AccountManager::changePassword(std::string name, std::string oldPassword, s
 }
 
 // Function to deposit money and add to account's balance if it exists
-std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::string password, int accountNumber, float amount) /* throw(std::invalid_argument) */ {
+std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::string password, int accountID, float amount) /* throw(std::invalid_argument) */ {
     try
     {
-        if (AccountManager::checkAccount(name, password, accountNumber)) {
-            return this->activeAccounts[accountNumber]->depositMoney(amount);
+        if (AccountManager::checkAccount(name, password, accountID)) {
+            return this->activeAccounts[accountID]->depositMoney(amount);
         }
     }
     catch(const std::invalid_argument& ia)
@@ -76,11 +76,11 @@ std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::s
 }
 
 // Function to withdraw money and deduct from account's balance if it exists
-std::pair<Currency, float> AccountManager::withdrawMoney(std::string name, std::string password, int accountNumber, float amount) /* throw(std::invalid_argument) */ {
+std::pair<Currency, float> AccountManager::withdrawMoney(std::string name, std::string password, int accountID, float amount) /* throw(std::invalid_argument) */ {
     try
     {
-        if (AccountManager::checkAccount(name, password, accountNumber)) {
-            return this->activeAccounts[accountNumber]->withdrawMoney(amount);
+        if (AccountManager::checkAccount(name, password, accountID)) {
+            return this->activeAccounts[accountID]->withdrawMoney(amount);
         }
     }
     catch(const std::invalid_argument& ia)

@@ -1,5 +1,10 @@
 #include "transform.h"
 
+// Function to transform and place resultant char value into a 1-byte array, big-endian style
+void transform::marshalChar(char input, char* bytes) {
+    *bytes = input;
+}
+
 // Function to transform and place resultant integer value into a 4-byte array, big-endian style
 void transform::marshalInt(int input, char* bytes) {
     int index = 0;
@@ -32,6 +37,11 @@ void transform::marshalString(std::string input, char* bytes) {
         *(bytes + index) = input[i];
         index++;
     }
+}
+
+// Function to transform marshalled data into a char value
+char transform::unmarshalChar(char* bytes) {
+    return *bytes;
 }
 
 // Function to transform marshalled data into an integer value

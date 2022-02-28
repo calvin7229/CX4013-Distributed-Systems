@@ -20,14 +20,15 @@ class Account {
         std::string name, password;
         Currency currency;
         float balance;
-        int accountNumber;
+        int accountID;
 
     public:
-        Account(std::string name, std::string password, Currency currency, float balance, int accountNumber);
+        Account(std::string name, std::string password, Currency currency, float balance, int accountID);
 
         std::string getName();
         std::string getPassword();
         std::string getCurrencyString();
+        int getCurrencyIndex();
         Currency getCurrency();
         static Currency getCurrency(int index);
         float getBalance();
