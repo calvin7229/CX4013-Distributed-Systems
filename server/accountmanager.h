@@ -13,9 +13,9 @@ class AccountManager {
         AccountManager();
 
         int createAccount(std::string name, std::string password, Currency currency, float balance);
-        bool checkAccount(std::string name, std::string password, int accountID);
-        bool closeAccount(std::string name, std::string password, int accountID);
-        bool changePassword(std::string name, std::string oldPassword, std::string newPassword, int accountID);
+        void checkAccount(std::string name, std::string password, int accountID);
+        void closeAccount(std::string name, std::string password, int accountID);
+        void changePassword(std::string name, std::string oldPassword, std::string newPassword, int accountID);
         std::pair<Currency, float> depositMoney(std::string name, std::string password, int accountID, float amount);
         std::pair<Currency, float> withdrawMoney(std::string name, std::string password, int accountID, float amount);
 

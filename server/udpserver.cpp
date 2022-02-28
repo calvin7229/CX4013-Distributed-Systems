@@ -3,12 +3,14 @@
 // Class constructor
 UDPServer::UDPServer(int port) {
     /*
-    Arguments:
-        domain   –  Specifies the communication (AF_INET for IPv4 / AF_INET6 for IPv6) 
-        type     –  Type of socket to be created (SOCK_STREAM for TCP / SOCK_DGRAM for UDP) 
-        protocol –  Protocol to be used by the socket (0 means use default protocol for the address family)
+        Arguments:
+            domain   –  Specifies the communication (AF_INET for IPv4 / AF_INET6 for IPv6) 
+            type     –  Type of socket to be created (SOCK_STREAM for TCP / SOCK_DGRAM for UDP) 
+            protocol –  Protocol to be used by the socket (0 means use default protocol for the address family)
+        
+        Returns a file descriptor for the new socket, or -1 for errors
     */
-    this->sockfd = socket(AF_INET, SOCK_DGRAM, 0);      // Returns a file descriptor for the new socket, or -1 for errors
+    this->sockfd = socket(AF_INET, SOCK_DGRAM, 0);      
     this->port = port;
 
     if (this->sockfd < 0) {

@@ -16,23 +16,12 @@ std::pair<std::string, std::string> getNameAndPassword() {
     return std::pair<std::string, std::string>{name, password};
 }
 
-std::string getCurrency(Currency currency) {
-    switch (currency) {
-        case SGD:
-            return "SGD";
-            break;
-        case MYR:
-            return "MYR";
-            break;
-        case GBP:
-            return "GBP";
-            break;
-        case USD:
-            return "USD";
-            break;
-    }
+std::string getCurrencyString(Currency currency) {
+    std::string currencies[] = {
+        "SGD",  "MYR", "GBP", "USD"
+    };
 
-    return "SGD";
+    return currencies[currency];
 }
 
 int main() {
@@ -68,24 +57,25 @@ int main() {
                 std::pair<std::string, std::string> p = getNameAndPassword();
                 name = p.first;
                 password = p.second;
-                std::cout << "Enter The Account's Currency {1. SGD, 2. MYR, 3. GBP, 4. USD}: ";
+                std::cout << "Enter The Account's Currency {0. SGD, 1. MYR, 2. GBP, 3. USD}: ";
                 std::cin >> currencyInt;
-                switch (currencyInt) {
-                case 1:
-                    currency = SGD;
-                    break;
-                case 2:
-                    currency = MYR;
-                    break;
-                case 3:
-                    currency = GBP;
-                    break;
-                case 4:
-                    currency = USD;
-                    break;    
-                default:
-                    break;
-                }
+                // switch (currencyInt) {
+                // case 1:
+                //     currency = SGD;
+                //     break;
+                // case 2:
+                //     currency = MYR;
+                //     break;
+                // case 3:
+                //     currency = GBP;
+                //     break;
+                // case 4:
+                //     currency = USD;
+                //     break;    
+                // default:
+                //     break;
+                // }
+                currency = Account::getCurrency(currencyInt);
                 std::cout << "Enter The Account's Initial Balance: ";
                 std::cin >> balance;
 
@@ -108,7 +98,7 @@ int main() {
 
                 try
                 {
-                    bool success = AM.changePassword(name, password, newPassword, accountNumber);
+                    AM.changePassword(name, password, newPassword, accountNumber);
                     std::cout << "\nPassword Changed Successfully!" << std::endl;
                 }
                 catch(const std::invalid_argument& ia)
@@ -134,7 +124,7 @@ int main() {
                 {
                     std::pair<Currency, float> cur = AM.depositMoney(name, password, accountNumber, amount);
                     std::cout << "\nAmount Deposited Successfully!" << std::endl;
-                    std::cout << "Account Balance: " << getCurrency(cur.first) << ". " << cur.second << std::endl;
+                    std::cout << "Account Balance: " << getCurrencyString(cur.first) << ". " << cur.second << std::endl;
                 }
                 catch(const std::invalid_argument& ia)
                 {
@@ -159,7 +149,7 @@ int main() {
                 {
                     std::pair<Currency, float> cur = AM.withdrawMoney(name, password, accountNumber, amount);
                     std::cout << "\nAmount Withdrawn Successfully!" << std::endl;
-                    std::cout << "Account Balance: " << getCurrency(cur.first) << ". " << cur.second << std::endl;
+                    std::cout << "Account Balance: " << getCurrencyString(cur.first) << ". " << cur.second << std::endl;
                 }
                 catch(const std::invalid_argument& ia)
                 {
@@ -179,7 +169,7 @@ int main() {
 
                 try
                 {
-                    bool success = AM.closeAccount(name, password, accountNumber);
+                    AM.closeAccount(name, password, accountNumber);
                     std::cout << "\nAccount Closed Successfully!" << std::endl;
                 }
                 catch(const std::invalid_argument& ia)
@@ -204,7 +194,7 @@ int main() {
                         std::cout << "Account Number: " << key << "\t";
                         std::cout << "Name: " << value->getName() << "\t";
                         std::cout << "Password: " << value->getPassword() << "\t";
-                        std::cout << "Balance: " << getCurrency(value->getCurrency()) << ". " << value->getBalance() << std::endl; 
+                        std::cout << "Balance: " << getCurrencyString(value->getCurrency()) << ". " << value->getBalance() << std::endl; 
                     }
                 }
                 break;

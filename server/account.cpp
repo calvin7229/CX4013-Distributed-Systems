@@ -21,23 +21,11 @@ std::string Account::getPassword() {
 
 // Getter: currency (in type std::string) 
 std::string Account::getCurrencyString() {
-    std::string currency;
-    switch (this->currency) {
-        case SGD:
-            currency = "SGD";
-            break;
-        case MYR:
-            currency = "MYR";
-            break;
-        case GBP:
-            currency = "GBP";
-            break;
-        case USD:
-            currency = "USD";
-            break;
-    }
+    std::string currencies[] = {
+        "SGD",  "MYR", "GBP", "USD"
+    };
 
-    return currency;
+    return currencies[getCurrencyIndex(this->currency)];
 }
 
 // Getter: currency
