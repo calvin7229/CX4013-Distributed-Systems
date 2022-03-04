@@ -1,15 +1,17 @@
 package client;
 
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.io.*;
+import java.net.*;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 import client.handler.*;
 
 class UDPClient{
     private int idCounter;
-
+    private int timeout;
+    private DatagramSocket clientSocket;
+    
     public UDPClient(String ip, int port) throws SocketException,UnknownHostException{
         this.idCounter = 0;
 
@@ -20,7 +22,13 @@ class UDPClient{
         this.idCounter++;
         return this.idCounter;
     }
-    private byte[] SendAndReceive(byte[] packageByte) {
+
+    public void setTimeout(int timeout) throws SocketException{
+        clientSocket.setSoTimeout(timeout);
+        this.timeout = timeout;
+    }
+
+    private byte[] SendAndReceive(byte[] packageByte) throws IOException, InterruptedException,TimeoutException{
         byte[] response = new byte[0];
         int timeoutCount = 0;
         do{
@@ -36,10 +44,13 @@ class UDPClient{
     }
 
     //@TODO Send and Receive functions
-    private void Send(byte[] packageByte) {
+    private void Send(byte[] packageByte) throws IOException, InterruptedException{
     }
 
-    private byte[] Receive(boolean isBlocking) {
+    private byte[] Receive(boolean isBlocking) throws IOException, InterruptedException,TimeoutException{
+        byte[] header = new byte[4];
+        DatagramPacket headerPacket = new DatagramPacket(new byte[0], 0);
+        this.clientSocket.receive(headerPacket);
         return new byte[0];
     }
 
@@ -62,7 +73,7 @@ class UDPClient{
         String msg = scanner.nextLine();
         int selection = Integer.parseInt(msg);
 
-        byte[] packageByte;
+        byte[] packageByte = null;
         int currID = udpclient.getID();
         boolean send= true;
         Handler handler = null;
@@ -71,27 +82,27 @@ class UDPClient{
             
             case 1:
                 handler = new OpenAccountHandler();
-                packageByte = OpenAccountHandler.create(scanner,currID);
+                packageByte = handler.executeService(scanner,currID);
                 break;
             case 2:
                 handler = new DepositHandler();
-                packageByte = DepositHandler.create(scanner,currID);
+                packageByte = handler.executeService(scanner,currID);
                 break;
             case 3:
                 handler = new WithdrawHandler();
-                packageByte = WithdrawHandler.create(scanner,currID);
+                packageByte = handler.executeService(scanner,currID);
                 break;
             case 4:
                 handler = new TransferHandler();
-                packageByte = TransferHandler.create(scanner,currID);
+                packageByte = handler.executeService(scanner,currID);
                 break;
             case 5:
                 handler = new CheckBalanceHandler();
-                packageByte = CheckBalanceHandler.create(scanner,currID);
+                packageByte = handler.executeService(scanner,currID);
                 break;
             case 6:
                 handler = new CloseAccountHandler();
-                packageByte = CloseAccountHandler.create(scanner,currID);
+                packageByte = handler.executeService(scanner,currID);
                 break;
             case 7:
                 System.out.println("Exit");
@@ -105,8 +116,9 @@ class UDPClient{
         }
         if (send){
             byte[] receivedbytes = udpclient.SendAndReceive(packageByte);
+            handler.executeService(scanner, currID);
         }
-        }
+        
 
             
 
