@@ -1,7 +1,8 @@
 package client.handler;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-public class DepositHandler{
+public class DepositHandler extends Handler{
     public static byte[] create(Scanner scanner, int currID) throws Exception{
         System.out.println("Enter account ID:");
         String msg = scanner.nextLine();
@@ -16,4 +17,11 @@ public class DepositHandler{
         packageByte[3] = (byte)amount;
         return packageByte;
     }
+
+    @Override
+    public void executeService(Scanner scanner, int id) throws UnsupportedEncodingException {
+        // TODO Auto-generated method stub
+        
+    }
+    
 }

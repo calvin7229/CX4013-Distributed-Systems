@@ -1,4 +1,4 @@
-package handler;
+package client.handler;
 
 import java.io.*;
 import java.lang.*;

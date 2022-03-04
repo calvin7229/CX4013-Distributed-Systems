@@ -47,5 +47,11 @@
         "istream": "cpp",
         "cstring": "cpp"
     },
-    "C_Cpp.errorSquiggles": "Enabled"
+    "C_Cpp.errorSquiggles": "Enabled",
+    
+        "java.project.sourcePaths": [
+            "CX4013-Distributed-Systems"
+        ]
+    
 }
+
