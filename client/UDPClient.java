@@ -1,8 +1,10 @@
+package client;
+
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.*;
 
-import handler.*;
+import client.handler.*;
 
 class UDPClient{
     private int idCounter;
@@ -17,6 +19,7 @@ class UDPClient{
         this.idCounter++;
         return this.idCounter;
     }
+
     public static void main(String[] args) throws Exception{
 
         UDPClient udpclient = new UDPClient("",0);
@@ -38,8 +41,10 @@ class UDPClient{
 
         byte[] packageByte;
         int currID = udpclient.getID();
+        boolean send= true;
 
         switch (selection){
+            
             case 1:
                 packageByte = OpenAccountHandler.create(scanner,currID);
                 break;
@@ -61,11 +66,19 @@ class UDPClient{
             case 7:
                 System.out.println("Exit");
                 exit = true;
+                send = false;
                 break;
             default:
                 System.out.println("Invalid selection");
+                send = false;
                 break;
-            }
+        }
+        if (send){
+            udpclient.SendAndRecieve(packageByte);
+        }
+        }
+
+            
 
         }
 

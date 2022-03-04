@@ -1,4 +1,4 @@
-package handler;
+package client.handler;
 
 import java.io.*;
 import java.lang.*;
@@ -66,6 +66,10 @@ public class OpenAccountHandler extends Handler {
         }
 
         return;
+    }
+
+    public static byte[] create(Scanner scanner, int currID) {
+        return null;
     }
     
 }

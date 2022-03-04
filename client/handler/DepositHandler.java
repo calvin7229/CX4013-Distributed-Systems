@@ -1,3 +1,4 @@
+package client.handler;
 import java.util.Scanner;
 
 public class DepositHandler{
