@@ -1,12 +1,13 @@
-package client;
+package handler;
 
 import java.io.*;
 import java.lang.*;
 import java.util.*;
+import client.Constants;
 
 //construct  message & create message & response(?) can have a separate class that handle all these
 //scanner?
-public class HandleOpenAccount extends Service {
+public class OpenAccountHandler extends Handler {
     
     @Override
     public void executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
@@ -57,7 +58,7 @@ public class HandleOpenAccount extends Service {
         float balance = Float.parseFloat(balanceStr);
 
         System.out.println();
-        boolean confirm = HandleOpenAccount.confirm(name, password, currency, balance, scanner);
+        boolean confirm = OpenAccountHandler.confirm(name, password, currency, balance, scanner);
         System.out.println();
 
         if (confirm){

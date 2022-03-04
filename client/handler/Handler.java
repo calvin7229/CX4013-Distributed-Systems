@@ -1,10 +1,10 @@
-package client;
+package handler;
 
 import java.io.*;
 import java.lang.*;
 import java.util.*;
 
-public abstract class Service{
+public abstract class Handler{
     public static void handleMessage() {
         ;
     }
