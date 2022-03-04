@@ -6,7 +6,7 @@ import java.util.*;
 
 public class CloseAccountHandler extends Handler{
     @Override
-    public void executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
+    public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Close Account:");
 
         // Enter Name
@@ -43,6 +43,6 @@ public class CloseAccountHandler extends Handler{
 
         // parent class method to construct and send;
 
-        return;
+        return new byte[0];
     }
 }

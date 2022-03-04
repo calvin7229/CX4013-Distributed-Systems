@@ -9,7 +9,7 @@ import client.Constants;
 public class DepositHandler extends Handler {
     
     @Override
-    public void executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
+    public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Deposit Money to Account:");
 
         // Enter Name
@@ -61,6 +61,6 @@ public class DepositHandler extends Handler {
 
         // parent class method to construct and send;
 
-        return;
+        return new byte[0];
     }
 }

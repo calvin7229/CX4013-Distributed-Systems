@@ -8,7 +8,7 @@ import client.Constants;
 public class OpenAccountHandler extends Handler {
     
     @Override
-    public void executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
+    public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Open Account:");
 
         // Enter Name
@@ -63,7 +63,11 @@ public class OpenAccountHandler extends Handler {
 
         // parent class method to construct and send;
 
-        return;
+        return new byte[0];
+    }
+
+    public static byte[] create(Scanner scanner, int currID) {
+        return null;
     }
     
 }

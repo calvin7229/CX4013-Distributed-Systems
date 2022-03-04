@@ -7,7 +7,7 @@ import client.Constants;
 
 public class CheckBalanceHandler extends Handler{
     @Override
-    public void executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
+    public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Check Account Balance:");
 
         // Enter Name
@@ -44,6 +44,6 @@ public class CheckBalanceHandler extends Handler{
 
         // parent class method to construct and send;
 
-        return;
+        return new byte[0];
     }
 }

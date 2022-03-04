@@ -8,7 +8,7 @@ import client.Constants;
 public class WithdrawHandler extends Handler {
     
     @Override
-    public void executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
+    public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Withdraw money from account:");
 
         // Enter Name
@@ -60,6 +60,6 @@ public class WithdrawHandler extends Handler {
 
         // parent class method to construct and send;
 
-        return;
+        return new byte[0];
     }
 }

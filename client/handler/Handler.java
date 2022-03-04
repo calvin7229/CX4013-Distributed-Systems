@@ -1,4 +1,4 @@
-package handler;
+package client.handler;
 
 import java.io.*;
 import java.lang.*;
@@ -11,5 +11,13 @@ public abstract class Handler{
     public static void handleResponse() {
         ;
     }
-    public abstract void executeService(Scanner scanner, int id)throws UnsupportedEncodingException;
+    public static void create() {
+        ;
+    }
+    public static boolean confirm(String name, String password, int currency, float balance,Scanner scanner){
+        //to confirm entered detail
+        //imo not really necessary lah 
+        return true;
+    }
+    public abstract byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException;
 }
