@@ -11,10 +11,5 @@ public abstract class Handler{
     public static void handleResponse() {
         ;
     }
-    public static boolean confirm(String name, String password, int currency, float balance,Scanner scanner){
-        //to confirm entered detail
-        //imo not really necessary lah 
-        return true;
-    }
     public abstract void executeService(Scanner scanner, int id)throws UnsupportedEncodingException;
 }

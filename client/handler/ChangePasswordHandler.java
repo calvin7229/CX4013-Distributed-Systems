@@ -5,11 +5,11 @@ import java.lang.*;
 import java.util.*;
 import client.Constants;
 
-public class WithdrawHandler extends Handler {
+public class ChangePasswordHandler extends Handler {
     
     @Override
     public void executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
-        System.out.println("Withdraw money from account:");
+        System.out.println("Change Account Password:");
 
         // Enter Name
         System.out.print("Please enter your name: ");
@@ -20,15 +20,25 @@ public class WithdrawHandler extends Handler {
             name = scanner.nextLine();
         }
 
-        // Enter Password
-        System.out.print("Please enter password: ");
-        String password = scanner.nextLine();
-        while(password.isEmpty()){
+        // Enter Old Password
+        System.out.print("Please enter old password: ");
+        String oldPassword = scanner.nextLine();
+        while(oldPassword.isEmpty()){
             System.out.println("Invalid input. Please try again.");
-            System.out.print("Please enter password: ");
-            password = scanner.nextLine();
+            System.out.print("Please enter old password: ");
+            oldPassword = scanner.nextLine();
         }
 
+        // Enter New Password
+        System.out.print("Please enter new password: ");
+        String newPassword = scanner.nextLine();
+        while(newPassword.isEmpty()){
+            System.out.println("Invalid input. Please try again.");
+            System.out.print("Please enter new password: ");
+            newPassword = scanner.nextLine();
+        }
+
+        
         // Enter Account Number
         System.out.println("Please enter your account number: ");
         Integer account = null;
@@ -43,23 +53,10 @@ public class WithdrawHandler extends Handler {
             }
         }
 
-        // Enter Starting Balance
-        System.out.print("Please enter withdraw amount: ");
-        Float balance = null;
-        if(scanner.hasNextFloat()){
-            balance = scanner.nextFloat();
-        }
-        while(balance == null){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter withdraw amount: ");
-            if(scanner.hasNextFloat()){
-                balance = scanner.nextFloat();
-            }
-        }
-
 
         // parent class method to construct and send;
 
         return;
     }
+    
 }
