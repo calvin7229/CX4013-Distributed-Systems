@@ -19,5 +19,5 @@ public abstract class Handler{
         //imo not really necessary lah 
         return true;
     }
-    public abstract void executeService(Scanner scanner, int id)throws UnsupportedEncodingException;
+    public abstract byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException;
 }

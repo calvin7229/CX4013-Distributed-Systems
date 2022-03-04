@@ -1,21 +1,15 @@
 package client.handler;
 
-<<<<<<< HEAD
-import java.io.UnsupportedEncodingException;
-import java.util.Scanner;
-
-public class CheckBalanceHandler extends Handler{
-=======
 import java.io.*;
 import java.lang.*;
 import java.util.*;
 import client.Constants;
 
-public class CheckBalanceHandler extends Handler{
+public class ChangePasswordHandler extends Handler {
+    
     @Override
     public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
-        System.out.println("Check Account Balance:");
->>>>>>> bb37956502da48507a8bca5302ebb02ac5070cae
+        System.out.println("Change Account Password:");
 
         // Enter Name
         System.out.print("Please enter your name: ");
@@ -26,15 +20,25 @@ public class CheckBalanceHandler extends Handler{
             name = scanner.nextLine();
         }
 
-        // Enter Password
-        System.out.print("Please enter password: ");
-        String password = scanner.nextLine();
-        while(password.isEmpty()){
+        // Enter Old Password
+        System.out.print("Please enter old password: ");
+        String oldPassword = scanner.nextLine();
+        while(oldPassword.isEmpty()){
             System.out.println("Invalid input. Please try again.");
-            System.out.print("Please enter password: ");
-            password = scanner.nextLine();
+            System.out.print("Please enter old password: ");
+            oldPassword = scanner.nextLine();
         }
 
+        // Enter New Password
+        System.out.print("Please enter new password: ");
+        String newPassword = scanner.nextLine();
+        while(newPassword.isEmpty()){
+            System.out.println("Invalid input. Please try again.");
+            System.out.print("Please enter new password: ");
+            newPassword = scanner.nextLine();
+        }
+
+        
         // Enter Account Number
         System.out.println("Please enter your account number: ");
         Integer account = null;
@@ -49,18 +53,10 @@ public class CheckBalanceHandler extends Handler{
             }
         }
 
+
         // parent class method to construct and send;
 
         return new byte[0];
     }
-<<<<<<< HEAD
-
-    @Override
-    public void executeService(Scanner scanner, int id) throws UnsupportedEncodingException {
-        // TODO Auto-generated method stub
-        
-    }
     
-=======
->>>>>>> bb37956502da48507a8bca5302ebb02ac5070cae
 }
