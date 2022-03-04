@@ -5,11 +5,22 @@ import java.util.*;
 import handler.*;
 
 class UDPClient{
+    private int idCounter;
 
-    // public UDPClient(String ip, int port) throws SocketException,UnknownHostException{
+    public UDPClient(String ip, int port) throws SocketException,UnknownHostException{
+        this.idCounter = 0;
 
-    // }
+
+    }
+
+    public int getID(){
+        this.idCounter++;
+        return this.idCounter;
+    }
     public static void main(String[] args) throws Exception{
+
+        UDPClient udpclient = new UDPClient("",0);
+
         boolean exit = false;
         while(!exit){
         System.out.println(
@@ -24,7 +35,10 @@ class UDPClient{
         Scanner scanner = new Scanner(System.in);
         String msg = scanner.nextLine();
         int selection = Integer.parseInt(msg);
+
         byte[] packageByte;
+        int currID = udpclient.getID();
+
         switch (selection){
             case 1:
                 packageByte = OpenAccountHandler.create(scanner,currID);
