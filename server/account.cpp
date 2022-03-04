@@ -1,12 +1,12 @@
 #include "account.h"
 
 // Class constructor
-Account::Account(std::string name, std::string password, Currency currency, float balance, int accountNumber) {
+Account::Account(std::string name, std::string password, Currency currency, float balance, int accountID) {
     this->name = name;
     this->password = password;
     this->currency = currency;
     this->balance = balance;
-    this->accountNumber = accountNumber;
+    this->accountID = accountID;
 }
 
 // Getter: name
@@ -19,10 +19,29 @@ std::string Account::getPassword() {
     return this->password;
 }
 
+// Getter: currency (in type std::string) 
+std::string Account::getCurrencyString() {
+    std::string currencies[] = {
+        "SGD",  "MYR", "GBP", "USD"
+    };
+
+    return currencies[getCurrencyIndex(this->currency)];
+}
+
 // Getter: currency
 Currency Account::getCurrency() {
     return this->currency;
 }
+
+// Getter: currency (from integer index representation) 
+Currency Account::getCurrency(int index) {
+    return static_cast<Currency>(index);
+}
+
+// Getter: currency (to integer index representation) 
+int Account::getCurrencyIndex(Currency currency) {
+    return static_cast<int>(currency);
+} 
 
 // Getter: balance
 float Account::getBalance() {
@@ -31,7 +50,7 @@ float Account::getBalance() {
 
 // Getter: account number
 int Account::getAccountNumber() {
-    return this->accountNumber;
+    return this->accountID;
 }
 
 // Function to change the account's password

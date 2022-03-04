@@ -10,24 +10,23 @@ enum Currency {
     USD
 };
 
-/*
-I was thinking that the account number should be randomly generated on the server side on creation.
-Server will keep track of a list of active accounts using their unique account number.
-*/
-
 class Account {
     private:
         std::string name, password;
         Currency currency;
         float balance;
-        int accountNumber;
+        int accountID;
 
     public:
-        Account(std::string name, std::string password, Currency currency, float balance, int accountNumber);
+        Account(std::string name, std::string password, Currency currency, float balance, int accountID);
 
         std::string getName();
         std::string getPassword();
+        std::string getCurrencyString();
         Currency getCurrency();
+        static Currency getCurrency(int index);
+        static int getCurrencyIndex(Currency currency);
+
         float getBalance();
         int getAccountNumber();     
 
