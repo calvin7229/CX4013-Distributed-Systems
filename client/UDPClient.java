@@ -11,10 +11,14 @@ class UDPClient{
     private int idCounter;
     private int timeout;
     private DatagramSocket clientSocket;
+    private InetAddress IP;
+    private int port;
     
     public UDPClient(String ip, int port) throws SocketException,UnknownHostException{
         this.idCounter = 0;
-
+        this.IP = InetAddress.getByName(ip);
+        this.port = port;
+        this.clientSocket = new DatagramSocket();
 
     }
 
@@ -45,18 +49,47 @@ class UDPClient{
 
     //@TODO Send and Receive functions
     private void Send(byte[] packageByte) throws IOException, InterruptedException{
+        byte[] header = new byte[Constants.INT_SIZE];
+        Utils.marshal(packageByte.length,header,0);
+        System.out.println(header);
+        DatagramPacket headerPacket;
+        // try{
+        headerPacket = new DatagramPacket(header, header.length, this.IP, this.port);
+
+        // }catch(Exception e){
+        //     System.out.println("1");
+        //     return;
+        // }
+        // try{
+        this.clientSocket.send(headerPacket);
+        // }catch(Exception e){
+        //     System.out.println("2");
+        //     return;
+        // }
+        DatagramPacket sendPacket = new DatagramPacket(packageByte, packageByte.length, this.IP, this.port);
+        this.clientSocket.send(sendPacket);
     }
 
-    private byte[] Receive(boolean isBlocking) throws IOException, InterruptedException,TimeoutException{
+    private byte[] Receive(boolean monitor) throws IOException, InterruptedException,TimeoutException{
+        //Get header
         byte[] header = new byte[4];
-        DatagramPacket headerPacket = new DatagramPacket(new byte[0], 0);
+        DatagramPacket headerPacket = new DatagramPacket(header, Constants.INT_SIZE);
         this.clientSocket.receive(headerPacket);
-        return new byte[0];
+        header = headerPacket.getData();
+        int length = Utils.unmarshalInteger(header,0);
+        //Get body
+        byte[] response = new byte[length];
+        DatagramPacket responsePacket = new DatagramPacket(response, response.length);
+        System.out.println(response.length);
+        this.clientSocket.receive(responsePacket);
+        response = responsePacket.getData();
+        return response;
+
     }
 
     public static void main(String[] args) throws Exception{
 
-        UDPClient udpclient = new UDPClient("",0);
+        UDPClient udpclient = new UDPClient("10.27.228.154",8888);
 
         boolean exit = false;
         while(!exit){
@@ -69,10 +102,13 @@ class UDPClient{
             "5. Check Balance\n" +
             "6. Close Account\n" +
             "7. Exit");
+
+        
+        
+        //Temp variables and buffers for passing parameters
         Scanner scanner = new Scanner(System.in);
         String msg = scanner.nextLine();
         int selection = Integer.parseInt(msg);
-
         byte[] packageByte = null;
         int currID = udpclient.getID();
         boolean send= true;
@@ -82,27 +118,21 @@ class UDPClient{
             
             case 1:
                 handler = new OpenAccountHandler();
-                packageByte = handler.executeService(scanner,currID);
                 break;
             case 2:
                 handler = new DepositHandler();
-                packageByte = handler.executeService(scanner,currID);
                 break;
             case 3:
                 handler = new WithdrawHandler();
-                packageByte = handler.executeService(scanner,currID);
                 break;
             case 4:
                 handler = new TransferHandler();
-                packageByte = handler.executeService(scanner,currID);
                 break;
             case 5:
                 handler = new CheckBalanceHandler();
-                packageByte = handler.executeService(scanner,currID);
                 break;
             case 6:
                 handler = new CloseAccountHandler();
-                packageByte = handler.executeService(scanner,currID);
                 break;
             case 7:
                 System.out.println("Exit");
@@ -115,8 +145,10 @@ class UDPClient{
                 break;
         }
         if (send){
+            
+            packageByte = handler.executeService(scanner, currID);
             byte[] receivedbytes = udpclient.SendAndReceive(packageByte);
-            handler.executeService(scanner, currID);
+            handler.handleResponse(receivedbytes);
         }
         
 

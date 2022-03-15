@@ -1,11 +1,5 @@
 package client.handler;
 
-<<<<<<< HEAD
-import java.io.UnsupportedEncodingException;
-import java.util.Scanner;
-
-public class CheckBalanceHandler extends Handler{
-=======
 import java.io.*;
 import java.lang.*;
 import java.util.*;
@@ -15,7 +9,6 @@ public class CheckBalanceHandler extends Handler{
     @Override
     public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Check Account Balance:");
->>>>>>> bb37956502da48507a8bca5302ebb02ac5070cae
 
         // Enter Name
         System.out.print("Please enter your name: ");
@@ -53,14 +46,7 @@ public class CheckBalanceHandler extends Handler{
 
         return new byte[0];
     }
-<<<<<<< HEAD
 
-    @Override
-    public void executeService(Scanner scanner, int id) throws UnsupportedEncodingException {
-        // TODO Auto-generated method stub
-        
-    }
+
     
-=======
->>>>>>> bb37956502da48507a8bca5302ebb02ac5070cae
 }

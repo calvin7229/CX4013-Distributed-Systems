@@ -10,9 +10,9 @@ public class TransferHandler extends Handler{
     }
 
     @Override
-    public void executeService(Scanner scanner, int id) throws UnsupportedEncodingException {
+    public byte[] executeService(Scanner scanner, int id) throws UnsupportedEncodingException {
         // TODO Auto-generated method stub
-        
+        return null;
     }
-    
+
 }

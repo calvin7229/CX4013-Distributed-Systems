@@ -8,7 +8,7 @@ public abstract class Handler{
     public static void handleMessage() {
         ;
     }
-    public static void handleResponse() {
+    public void handleResponse(byte[] response) throws IOException {
         ;
     }
     public static void create() {
