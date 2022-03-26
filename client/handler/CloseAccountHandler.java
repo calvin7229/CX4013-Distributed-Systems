@@ -29,6 +29,20 @@ public class CloseAccountHandler extends Handler{
             password = scanner.nextLine();
         }
 
+        // Enter Account Number
+        System.out.println("Please enter your account number: ");
+        Integer account = null;
+        if(scanner.hasNextInt()){
+            account = scanner.nextInt();
+        }
+        while(account == null){
+            System.out.println("Invalid input. Please try again.");
+            System.out.println("Please enter your account number: ");
+            if(scanner.hasNextInt()){
+                account = scanner.nextInt();
+            }
+        }
+
         int size = name.length() + password.length() + Constants.INT_SIZE*4;
         byte[] packageByte = new byte[size];
         int index = 0;
@@ -44,6 +58,8 @@ public class CloseAccountHandler extends Handler{
         index += Constants.INT_SIZE;
         Utils.marshal(password, packageByte, index);
         index += password.length();
+        Utils.marshal(account, packageByte, index);
+        index += Constants.INT_SIZE;
 
         return packageByte;
     }
