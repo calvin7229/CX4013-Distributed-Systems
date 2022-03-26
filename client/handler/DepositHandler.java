@@ -103,12 +103,11 @@ public class DepositHandler extends Handler {
         else{
             System.out.println("Deposit Successful");
             //todo print acc balance
-            int currsize = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
             int currency = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
             System.out.println("Currency: "+ currency);
-            int balsize = Utils.unmarshalInteger(response, index);  index += Constants.INT_SIZE;
             Float balance = Utils.unmarshalFloat(response, index);
             System.out.println("Balance: "+ balance);
         }
     }
 }
+
