@@ -34,7 +34,7 @@ public class CloseAccountHandler extends Handler{
         int index = 0;
         Utils.marshal(id, packageByte, index);
         index += Constants.INT_SIZE;
-        Utils.marshal(4, packageByte, index);
+        Utils.marshal(2, packageByte, index);
         index += Constants.INT_SIZE;
         Utils.marshal(name.length(), packageByte, index);
         index += Constants.INT_SIZE;

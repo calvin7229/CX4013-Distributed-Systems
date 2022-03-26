@@ -66,7 +66,7 @@ public class OpenAccountHandler extends Handler {
         int index = 0;
         Utils.marshal(id, packageByte, index);
         index += Constants.INT_SIZE;
-        Utils.marshal(4, packageByte, index);
+        Utils.marshal(1, packageByte, index);
         index += Constants.INT_SIZE;
         Utils.marshal(name.length(), packageByte, index);
         index += Constants.INT_SIZE;
@@ -104,8 +104,7 @@ public class OpenAccountHandler extends Handler {
         else{
             System.out.println("Open Account Successful");
             //todo print acc number
-            int accidsize = Utils.unmarshalInteger(response, index);    index += Constants.INT_SIZE;
-            String accid = Utils.unmarshalString(response, index, index+accidsize);
+            String accid = Utils.unmarshalString(response, index, index+Constants.INT_SIZE);
             System.out.println(accid);
         }
     }

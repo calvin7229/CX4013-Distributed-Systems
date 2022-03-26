@@ -89,7 +89,7 @@ class UDPClient{
 
     public static void main(String[] args) throws Exception{
 
-        UDPClient udpclient = new UDPClient("10.27.228.154",8888);
+        UDPClient udpclient = new UDPClient("10.27.248.51",8888);
 
         boolean exit = false;
         while(!exit){
