@@ -13,6 +13,7 @@ class UDPClient{
     private DatagramSocket clientSocket;
     private InetAddress IP;
     private int port;
+    private float failrate=0.0f;
     
     public UDPClient(String ip, int port) throws SocketException,UnknownHostException{
         this.idCounter = 0;
@@ -49,6 +50,10 @@ class UDPClient{
 
     //@TODO Send and Receive functions
     private void Send(byte[] packageByte) throws IOException, InterruptedException{
+        if (Math.random()<this.failrate){
+            System.out.println("Simulated Failure");
+            return;
+        }
         byte[] header = new byte[Constants.INT_SIZE];
         Utils.marshal(packageByte.length,header,0);
         System.out.println(header);
@@ -87,6 +92,8 @@ class UDPClient{
 
     }
 
+    //@TODO settings
+    //private void Settings()
     public static void main(String[] args) throws Exception{
 
         UDPClient udpclient = new UDPClient("10.27.248.51",8888);
