@@ -46,7 +46,7 @@ public class ChangePasswordHandler extends Handler {
         if(scanner.hasNextInt()){
             account = scanner.nextInt();
         }
-        while(account == null){
+        while(account == null || account < 0){
             System.out.println("Invalid input. Please try again.");
             System.out.println("Please enter your account number: ");
             if(scanner.hasNextInt()){
