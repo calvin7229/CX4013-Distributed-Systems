@@ -34,7 +34,7 @@ public class TransferHandler extends Handler{
         if(scanner.hasNextInt()){
             account = scanner.nextInt();
         }
-        while(account == null){
+        while(account == null || account < 0){
             System.out.println("Invalid input. Please try again.");
             System.out.println("Please enter your account number: ");
             if(scanner.hasNextInt()){
@@ -60,7 +60,7 @@ public class TransferHandler extends Handler{
         if(scanner.hasNextInt()){
             targetAccount = scanner.nextInt();
         }
-        while(targetAccount == null){
+        while(account == null || account < 0){
             System.out.println("Invalid input. Please try again.");
             System.out.println("Please enter target account number: ");
             if(scanner.hasNextInt()){
@@ -74,7 +74,7 @@ public class TransferHandler extends Handler{
         if(scanner.hasNextFloat()){
             amount = scanner.nextFloat();
         }
-        while(amount == null){
+        while(amount == null || amount < 0){
             System.out.println("Invalid input. Please try again.");
             System.out.println("Please enter transfer amount: ");
             if(scanner.hasNextFloat()){
@@ -82,7 +82,7 @@ public class TransferHandler extends Handler{
             }
         }
 
-        int size = name.length() + password.length() + Constants.INT_SIZE*6 + Constants.FLOAT_SIZE;
+        int size = name.length() + password.length() + targetName.length() + Constants.INT_SIZE*7 + Constants.FLOAT_SIZE;
         byte[] packageByte = new byte[size];
         int index = 0;
         Utils.marshal(currID, packageByte, index);

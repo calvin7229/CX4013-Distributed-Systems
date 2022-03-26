@@ -82,7 +82,11 @@ public class CheckBalanceHandler extends Handler{
             System.out.println(error);
         }
         else{
-            System.out.println("TODO");
+            System.out.println("Account Status:");
+            int currency = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
+            System.out.println("Currency: "+ currency);
+            Float balance = Utils.unmarshalFloat(response, index);
+            System.out.println("Balance: "+ balance);
         }
     }
 }
