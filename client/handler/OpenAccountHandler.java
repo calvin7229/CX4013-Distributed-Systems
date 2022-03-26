@@ -87,6 +87,7 @@ public class OpenAccountHandler extends Handler {
     public void handleResponse(byte[] response) throws IOException{
         int index = 0;
         int id = Utils.unmarshalInteger(response, index);
+        System.out.println("ID is ");
         System.out.println(id);
         index += Constants.INT_SIZE;
         String status = Utils.unmarshalString(response, index,index+1);
@@ -104,7 +105,8 @@ public class OpenAccountHandler extends Handler {
         else{
             System.out.println("Open Account Successful");
             //todo print acc number
-            String accid = Utils.unmarshalString(response, index, index+Constants.INT_SIZE);
+            int accid = Utils.unmarshalInteger(response, index);
+            System.out.print("ACC ID :");
             System.out.println(accid);
         }
     }
