@@ -90,7 +90,7 @@ public class WithdrawHandler extends Handler {
         //System.out.println(index);
         index += 1;
         
-        if(status.charAt(0) == '1'){
+        if(status.charAt(0) == '0'){
             System.out.println("Withdraw Failed");
             int errorsize = Utils.unmarshalInteger(response, index);
             index += Constants.INT_SIZE;

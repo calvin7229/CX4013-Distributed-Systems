@@ -73,7 +73,7 @@ public class CheckBalanceHandler extends Handler{
         //System.out.println(index);
         index += 1;
         
-        if(status.charAt(0) == '1'){
+        if(status.charAt(0) == '0'){
             System.out.println("Failed to get account balance");
             int errorsize = Utils.unmarshalInteger(response, index);
             index += Constants.INT_SIZE;
