@@ -61,7 +61,7 @@ public class OpenAccountHandler extends Handler {
         if(scanner.hasNextFloat()){
             balance = scanner.nextFloat();
         }
-        while(balance == null){
+        while(balance == null || balance < 0){
             System.out.println("Invalid input. Please try again.");
             System.out.println("Please enter account balance: ");
             if(scanner.hasNextFloat()){
