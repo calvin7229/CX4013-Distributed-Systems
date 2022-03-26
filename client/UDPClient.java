@@ -43,7 +43,8 @@ class UDPClient{
                 response = this.Receive(false);
                 break;
             }catch(SocketTimeoutException e){
-            System.out.printf("Timeout!",++timeoutCount);
+            System.out.printf("Timeout!");
+            System.out.println(++timeoutCount);
             //Check if the current timeout times exceed the maximum timeout allowed
             if (this.maxTimeout >0 && timeoutCount >=this.maxTimeout){
                 throw new TimeoutException("Max timeout reached!");
@@ -62,7 +63,6 @@ class UDPClient{
         }
         byte[] header = new byte[Constants.INT_SIZE];
         Utils.marshal(packageByte.length,header,0);
-        System.out.println(header);
         DatagramPacket headerPacket;
         // try{
         headerPacket = new DatagramPacket(header, header.length, this.IP, this.port);
@@ -87,7 +87,13 @@ class UDPClient{
         DatagramPacket responsePacket = new DatagramPacket(response, response.length);
         this.clientSocket.receive(responsePacket);
         response = responsePacket.getData();
-
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for (byte b : response){
+            sb.append(String.format("0x%02X ", b));
+        }
+        sb.append("]");
+        System.out.println(sb.toString());
         return response;
 
     }
@@ -97,9 +103,12 @@ class UDPClient{
     public static void main(String[] args) throws Exception{
         
         UDPClient udpclient = new UDPClient("10.27.248.51",8888);
-        udpclient.failrate = Float.parseFloat(args[0]);
-        udpclient.setTimeout(Integer.parseInt(args[1]));
-        udpclient.maxTimeout = Integer.parseInt(args[2]);
+        // udpclient.failrate = Float.parseFloat(args[0]);
+        // udpclient.setTimeout(Integer.parseInt(args[1]));
+        // udpclient.maxTimeout = Integer.parseInt(args[2]);
+        udpclient.failrate = 0;
+        udpclient.setTimeout(1000);
+        udpclient.maxTimeout = 5;
 
         boolean exit = false;
         while(!exit){
