@@ -9,12 +9,13 @@ import client.handler.*;
 
 class UDPClient{
     private int idCounter;
-    private int timeout;
+    private int timeout = 2000;
     private DatagramSocket clientSocket;
     private InetAddress IP;
     private int port;
     private float failrate=0.0f;
-    
+    private int seminvo = 2; //semantic invocation, 1: At Most once, 2: At Least once
+    private int maxTimeout = 0;
     public UDPClient(String ip, int port) throws SocketException,UnknownHostException{
         this.idCounter = 0;
         this.IP = InetAddress.getByName(ip);
@@ -42,9 +43,14 @@ class UDPClient{
                 response = this.Receive(false);
                 break;
             }catch(SocketTimeoutException e){
-                //@TODO: Handle timeout
+            System.out.printf("Timeout!",++timeoutCount);
+            //Check if the current timeout times exceed the maximum timeout allowed
+            if (this.maxTimeout >0 && timeoutCount >=this.maxTimeout){
+                throw new TimeoutException("Max timeout reached!");
             }
-        } while(false);
+            }
+            continue;
+        } while(this.seminvo >=1);
         return response;
     }
 
@@ -60,34 +66,28 @@ class UDPClient{
         DatagramPacket headerPacket;
         // try{
         headerPacket = new DatagramPacket(header, header.length, this.IP, this.port);
-
-        // }catch(Exception e){
-        //     System.out.println("1");
-        //     return;
-        // }
-        // try{
         this.clientSocket.send(headerPacket);
-        // }catch(Exception e){
-        //     System.out.println("2");
-        //     return;
-        // }
         DatagramPacket sendPacket = new DatagramPacket(packageByte, packageByte.length, this.IP, this.port);
         this.clientSocket.send(sendPacket);
     }
 
     private byte[] Receive(boolean monitor) throws IOException, InterruptedException,TimeoutException{
         //Get header
+        
         byte[] header = new byte[4];
         DatagramPacket headerPacket = new DatagramPacket(header, Constants.INT_SIZE);
         this.clientSocket.receive(headerPacket);
         header = headerPacket.getData();
         int length = Utils.unmarshalInteger(header,0);
+
+
+
         //Get body
         byte[] response = new byte[length];
         DatagramPacket responsePacket = new DatagramPacket(response, response.length);
-        System.out.println(response.length);
         this.clientSocket.receive(responsePacket);
         response = responsePacket.getData();
+
         return response;
 
     }
@@ -95,8 +95,11 @@ class UDPClient{
     //@TODO settings
     //private void Settings()
     public static void main(String[] args) throws Exception{
-
+        
         UDPClient udpclient = new UDPClient("10.27.248.51",8888);
+        udpclient.failrate = Float.parseFloat(args[0]);
+        udpclient.setTimeout(Integer.parseInt(args[1]));
+        udpclient.maxTimeout = Integer.parseInt(args[2]);
 
         boolean exit = false;
         while(!exit){
