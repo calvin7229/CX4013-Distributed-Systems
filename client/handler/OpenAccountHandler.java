@@ -9,6 +9,14 @@ import client.Utils;
 public class OpenAccountHandler extends Handler {
     
     @Override
+    /**
+     * Execute the service
+     * @param scanner
+     * @param id
+     * @return
+     * @throws UnsupportedEncodingException
+     * 
+     */
     public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Open Account:");
 
@@ -93,6 +101,7 @@ public class OpenAccountHandler extends Handler {
         String status = Utils.unmarshalString(response, index,index+1);
         //System.out.println(index);
         index += 1;
+        //System.out.println(response);
         
         if(status.charAt(0) == '0'){
             System.out.println("Open Account Failed");

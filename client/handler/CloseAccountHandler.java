@@ -43,7 +43,7 @@ public class CloseAccountHandler extends Handler{
             }
         }
 
-        int size = name.length() + password.length() + Constants.INT_SIZE*4;
+        int size = name.length() + password.length() + Constants.INT_SIZE*5;
         byte[] packageByte = new byte[size];
         int index = 0;
         Utils.marshal(id, packageByte, index);
