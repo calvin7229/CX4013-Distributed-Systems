@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.*;
 import java.util.*;
 import client.Constants;
+import client.Utils;
 
 
 public class DepositHandler extends Handler {
@@ -44,25 +45,70 @@ public class DepositHandler extends Handler {
             }
         }
 
-        // Enter Starting Balance
+        // Enter Deposit Amount
         System.out.print("Please enter deposit amount: ");
-        Float balance = null;
+        Float amount = null;
         if(scanner.hasNextFloat()){
-            balance = scanner.nextFloat();
+            amount = scanner.nextFloat();
         }
-        while(balance == null){
+        while(amount == null){
             System.out.println("Invalid input. Please try again.");
             System.out.println("Please enter deposit amount: ");
             if(scanner.hasNextFloat()){
-                balance = scanner.nextFloat();
+                amount = scanner.nextFloat();
             }
         }
 
 
-        // parent class method to construct and send;
+        int size = name.length() + password.length() + Constants.INT_SIZE*5 + Constants.FLOAT_SIZE;
+        byte[] packageByte = new byte[size];
+        int index = 0;
+        Utils.marshal(id, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(4, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(name.length(), packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(name, packageByte, index);
+        index += name.length();
+        Utils.marshal(password.length(), packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(password, packageByte, index);
+        index += password.length();
+        Utils.marshal(account, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(amount, packageByte, index);
+        index += Constants.FLOAT_SIZE;
 
-        return new byte[0];
+        return packageByte;
     }
-
-    
+    @Override
+    public void handleResponse(byte[] response) throws IOException{
+        int index = 0;
+        int id = Utils.unmarshalInteger(response, index);
+        System.out.println(id);
+        index += Constants.INT_SIZE;
+        String status = Utils.unmarshalString(response, index,index+1);
+        //System.out.println(index);
+        index += 1;
+        
+        if(status.charAt(0) == '1'){
+            System.out.println("Deposit Failed");
+            int errorsize = Utils.unmarshalInteger(response, index);
+            index += Constants.INT_SIZE;
+            System.out.println(errorsize);
+            String error = Utils.unmarshalString(response, index, index+errorsize); index+=errorsize;
+            System.out.println(error);
+        }
+        else{
+            System.out.println("Deposit Successful");
+            //todo print acc balance
+            int currsize = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
+            int currency = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
+            System.out.println("Currency: "+ currency);
+            int balsize = Utils.unmarshalInteger(response, index);  index += Constants.INT_SIZE;
+            Float balance = Utils.unmarshalFloat(response, index);
+            System.out.println("Balance: "+ balance);
+        }
+    }
 }

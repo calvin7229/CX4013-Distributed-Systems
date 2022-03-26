@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.*;
 import java.util.*;
 import client.Constants;
+import client.Utils;
 
 public class CheckBalanceHandler extends Handler{
     @Override
@@ -42,11 +43,46 @@ public class CheckBalanceHandler extends Handler{
             }
         }
 
-        // parent class method to construct and send;
+        int size = name.length() + password.length() + Constants.INT_SIZE*6;
+        byte[] packageByte = new byte[size];
+        int index = 0;
+        Utils.marshal(id, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(4, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(name.length(), packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(name, packageByte, index);
+        index += name.length();
+        Utils.marshal(password.length(), packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(password, packageByte, index);
+        index += password.length();
+        Utils.marshal(account, packageByte, index);
+        index += Constants.INT_SIZE;
 
-        return new byte[0];
+        return packageByte;
     }
-
-
-    
+    @Override
+    public void handleResponse(byte[] response) throws IOException{
+        int index = 0;
+        int id = Utils.unmarshalInteger(response, index);
+        System.out.println(id);
+        index += Constants.INT_SIZE;
+        String status = Utils.unmarshalString(response, index,index+1);
+        //System.out.println(index);
+        index += 1;
+        
+        if(status.charAt(0) == '1'){
+            System.out.println("Failed to get account balance");
+            int errorsize = Utils.unmarshalInteger(response, index);
+            index += Constants.INT_SIZE;
+            System.out.println(errorsize);
+            String error = Utils.unmarshalString(response, index, index+errorsize);
+            System.out.println(error);
+        }
+        else{
+            System.out.println("TODO");
+        }
+    }
 }

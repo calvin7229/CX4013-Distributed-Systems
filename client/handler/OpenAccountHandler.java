@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.*;
 import java.util.*;
 import client.Constants;
+import client.Utils;
 
 public class OpenAccountHandler extends Handler {
     
@@ -60,14 +61,52 @@ public class OpenAccountHandler extends Handler {
             }
         }
 
+        int size = name.length() + password.length() + Constants.INT_SIZE*5 + Constants.FLOAT_SIZE;
+        byte[] packageByte = new byte[size];
+        int index = 0;
+        Utils.marshal(id, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(4, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(name.length(), packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(name, packageByte, index);
+        index += name.length();
+        Utils.marshal(password.length(), packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(password, packageByte, index);
+        index += password.length();
+        Utils.marshal(currency, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(balance, packageByte, index);
+        index += Constants.FLOAT_SIZE;
 
-        // parent class method to construct and send;
-
-        return new byte[0];
+        return packageByte;
     }
-
-    public static byte[] create(Scanner scanner, int currID) {
-        return null;
+    @Override
+    public void handleResponse(byte[] response) throws IOException{
+        int index = 0;
+        int id = Utils.unmarshalInteger(response, index);
+        System.out.println(id);
+        index += Constants.INT_SIZE;
+        String status = Utils.unmarshalString(response, index,index+1);
+        //System.out.println(index);
+        index += 1;
+        
+        if(status.charAt(0) == '1'){
+            System.out.println("Open Account Failed");
+            int errorsize = Utils.unmarshalInteger(response, index);
+            index += Constants.INT_SIZE;
+            System.out.println(errorsize);
+            String error = Utils.unmarshalString(response, index, index+errorsize);
+            System.out.println(error);
+        }
+        else{
+            System.out.println("Open Account Successful");
+            //todo print acc number
+            int accidsize = Utils.unmarshalInteger(response, index);    index += Constants.INT_SIZE;
+            String accid = Utils.unmarshalString(response, index, index+accidsize);
+            System.out.println(accid);
+        }
     }
-    
 }

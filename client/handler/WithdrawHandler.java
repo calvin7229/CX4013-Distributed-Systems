@@ -95,11 +95,17 @@ public class WithdrawHandler extends Handler {
             int errorsize = Utils.unmarshalInteger(response, index);
             index += Constants.INT_SIZE;
             System.out.println(errorsize);
-            String error = Utils.unmarshalString(response, index, index+errorsize);
+            String error = Utils.unmarshalString(response, index, index+errorsize); index += errorsize;
             System.out.println(error);
         }
         else{
             System.out.println("Withdraw Successful");
+            int currsize = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
+            int currency = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
+            System.out.println("Currency: "+ currency);
+            int balsize = Utils.unmarshalInteger(response, index); index += Constants.INT_SIZE;
+            Float balance = Utils.unmarshalFloat(response, index);
+            System.out.println("Balance: "+ balance);
         }
     }
 }
