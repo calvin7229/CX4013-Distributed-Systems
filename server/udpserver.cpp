@@ -47,6 +47,7 @@ UDPServer::UDPServer(int port) {
     this->clientLen = sizeof(this->clientAddr);
 }
 
+
 // Function to receive message on the server socket through UDP
 int UDPServer::receive(char* buffer, size_t bufferSize, int timeoutSecs) /* throw(std::string) */ {
     timeval tv = {.tv_sec = timeoutSecs, .tv_usec = 0};
@@ -72,16 +73,40 @@ int UDPServer::receive(char* buffer, size_t bufferSize, int timeoutSecs) /* thro
     return n;
 }
 
+
 // Function to send message on the server socket through UDP
 void UDPServer::send(const char* buffer, size_t bufferSize) {
     // Send bufferSize bytes of buffer on socket FD to peer at address clientAddr
     sendto(this->sockfd, buffer, bufferSize, 0, (sockaddr*)&this->clientAddr, (socklen_t)this->clientLen);
 }
 
+
+// Function to send message on the server socket through UDP with specific client address
+void UDPServer::send(const char* buffer, size_t bufferSize, sockaddr_in clientAddr) {
+    // size_t cl;
+    // sockaddr_in ca;
+
+    // cl = sizeof(ca);
+    // ca.sin_family = AF_INET;
+    // ca.sin_port = htonl(INADDR_ANY);
+    // ca.sin_addr.s_addr = inet_addr() clientAddr;
+    // std::memset(&ca, 0, sizeof(ca));
+
+    int turn_on = 1;
+    int retval = setsockopt(this->sockfd, SOL_SOCKET, SO_BROADCAST, &turn_on, (socklen_t)sizeof(turn_on));
+    std::cout << "retval status: " << retval << std::endl;
+
+    // Send bufferSize bytes of buffer on socket FD to peer at address clientAddr
+    int i = sendto(this->sockfd, buffer, bufferSize, 0, (sockaddr*)&clientAddr, (socklen_t)sizeof(clientAddr));
+    std::cout << "Debug status: " << i << std::endl;
+}
+
+
 // Getter: clientAddr
 sockaddr_in UDPServer::getClientAddr() {
     return this->clientAddr;
 }
+
 
 // Getter: clientLen
 size_t UDPServer::getClientLen() {

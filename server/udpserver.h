@@ -4,6 +4,7 @@
 #include <cstring>
 #include <netinet/in.h>
 #include <sys/time.h> 
+#include <arpa/inet.h>
 
 class UDPServer {
     private:
@@ -20,6 +21,8 @@ class UDPServer {
 
         int receive(char* buffer, size_t bufferSize, int timeoutSecs);
         void send(const char* buffer, size_t bufferSize);
+        void send(const char* buffer, size_t bufferSize, sockaddr_in clientAddr);
+
 
         sockaddr_in getClientAddr();
         size_t getClientLen();

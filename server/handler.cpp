@@ -9,6 +9,7 @@ Handler::Handler(double failureRate) {
     std::random_device device;
 
     this->AM = AccountManager();
+    this->monitor = Monitor();
     this->mt = std::mt19937(device());
     this->distribution = std::uniform_real_distribution<double> (0.0, 1.0);
 
@@ -16,6 +17,7 @@ Handler::Handler(double failureRate) {
     this->responseID = 0;
     this->failureRate = failureRate;
 }
+
 
 // For debugging use
 void printB(char c) {
@@ -85,6 +87,8 @@ void Handler::inquire(UDPServer& server) {
         case 6:
             serviceBalance(server, buffer, requestID);
             break;
+        case 7:
+            serviceSubscribe(server, buffer, requestID);
         default:
             break;
     }
@@ -110,6 +114,16 @@ void Handler::answer(UDPServer& server, char* header, char* body, int bodySize) 
     } else {
         std::cout << "--- Failure Occured! ---" << std::endl;
     }
+}
+
+
+// Function to notify a subscriber
+void Handler::notify(UDPServer& server, char* header, char* body, int bodySize, sockaddr_in clientAddr) {
+    // Send header
+    server.send(header, HEADER_SIZE, clientAddr);
+
+    // Send body
+    server.send(body, bodySize, clientAddr);
 }
 
 
@@ -162,6 +176,7 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
         name = transform::unmarshalString(info, n);     info += n;
+        std::cout << "Client Addr: " << clientAddr << std::endl;
         std::cout << "Account Name: " << name << std::endl;
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
@@ -178,6 +193,15 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
         // Create the account through Account Manager
         int accountID = AM.createAccount(name, password, currency, balance);
         std::cout << "Account ID: " << accountID << std::endl;
+
+        // Prepare callback message
+        std::string callback;
+        std::stringstream ss;
+        ss << "Account OPENED by ";
+        ss << clientAddr << std::endl;
+        callback = ss.str();
+
+        updateSubscribers(server, callback);
 
         // Prepare response message
         int bodySize = BASIC_RESPONSE_SIZE + INT_SIZE;
@@ -709,5 +733,87 @@ void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
         cache[{clientAddr, requestID}] = s;
 
         answer(server, header, body, bodySize);
+    }
+}
+
+
+// Function to handle service: Subscribe to server
+/*
+    Response structure:
+        Header
+            * Description *     * Type *        * Size (bytes) *
+            Size of body        int             4
+        Body
+            * Description *     * Type *        * Size (bytes) *
+            Response ID         int             4
+            Acknowledgement     char            1
+*/
+void Handler::serviceSubscribe(UDPServer& server, char* info, int requestID) {
+    auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+    auto clientA = server.getClientAddr();
+
+    // Check if request ID already in cache
+    if (cache.find({clientAddr, requestID}) != cache.end()) {
+        accessDuplicates(server, clientAddr, requestID);
+    } else {
+        // Extract essential information to subscribe to server
+        int durationSec;
+
+        durationSec = transform::unmarshalInt(info);      info += INT_SIZE;
+        std::cout << "Client Address: " << clientAddr << std::endl;
+        std::cout << "Monitor Duration (Sec): " << durationSec << std::endl;
+
+        // Add client to subscribers list
+        auto deadline = std::chrono::system_clock::now() + std::chrono::milliseconds(durationSec * 1000);
+        auto epoch = deadline.time_since_epoch();
+        auto value = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+        unsigned long timestamp = value.count();
+
+        monitor.addSubscriber(clientA, timestamp);
+        monitor.sortSubscribers();
+
+        // Prepare response message
+        int bodySize = BASIC_RESPONSE_SIZE;
+        char header[HEADER_SIZE];
+        char body[bodySize];
+
+        transform::marshalInt(bodySize, header);
+        char* buffer = body;
+
+        transform::marshalInt(getResponseID(), buffer); buffer += ID_SIZE;
+        transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
+
+        // Save buffer result into cache
+        std::string s = std::string(body, bodySize);
+
+        cache[{clientAddr, requestID}] = s;
+
+        answer(server, header, body, bodySize);
+    }
+}
+
+
+// Callback function to update all active subscribers
+void Handler::updateSubscribers(UDPServer& server, std::string message) {
+    monitor.removeSubscribers();
+
+    auto subscribers = monitor.getSubscribers();
+    int bodySize = message.size();
+    char header[HEADER_SIZE];
+    char body[bodySize];
+
+    transform::marshalInt(bodySize, header);
+
+    for (int i = 0; i < bodySize; i++) {
+        body[i] = message[i];
+    }
+
+    std::cout << "Callback: " << message << std::endl;
+
+    for (const auto& pair : subscribers) {
+        sockaddr_in clientAddr = pair.first;
+
+        notify(server, header, body, bodySize, clientAddr);
+        std::cout << "Subscriber Address: " << clientAddr.sin_addr.s_addr << std::endl;
     }
 }
