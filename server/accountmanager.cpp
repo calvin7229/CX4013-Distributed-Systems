@@ -31,6 +31,21 @@ void AccountManager::checkAccount(std::string name, std::string password, int ac
     }
 }
 
+// Function to check if account details entered matches a target account
+void AccountManager::checkTargetAccount(std::string targetName, int targetAccountID) /* throw(std::invalid_argument) */ {
+    if (this->activeAccounts.find(targetAccountID) != this->activeAccounts.end()) {
+        Account* account = this->activeAccounts[targetAccountID];
+        
+        if (account->getName() != targetName) {
+            throw std::invalid_argument("Invalid target account name corresponding to target account number!");
+        } else {
+            return;
+        }
+    } else {
+        throw std::invalid_argument("Invalid target account number!");
+    }
+}
+
 // Function to close (remove) an active account, if it exists
 void AccountManager::closeAccount(std::string name, std::string password, int accountID) /* throw(std::invalid_argument) */ {
     try
@@ -59,6 +74,27 @@ void AccountManager::changePassword(std::string name, std::string oldPassword, s
     }
 }
 
+// Function to get the exchange rate from two currencies
+float AccountManager::getExchangeRate(Currency currency, Currency targetCurrency) {
+    return 1;
+}
+
+// Function to get an account's balance, if it exists
+std::pair<Currency, float> AccountManager::checkAccountBalance(std::string name, std::string password, int accountID) /* throw(std::invalid_argument) */ {
+    try
+    {
+        AccountManager::checkAccount(name, password, accountID);
+        Currency currency = this->activeAccounts[accountID]->getCurrency();
+        float balance = this->activeAccounts[accountID]->getBalance();
+        return std::pair<Currency, float>(currency, balance);
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        throw std::invalid_argument(ia.what());
+    }
+}
+
+
 // Function to deposit money and add to account's balance, if it exists
 std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::string password, int accountID, float amount) /* throw(std::invalid_argument) */ {
     try
@@ -83,6 +119,27 @@ std::pair<Currency, float> AccountManager::withdrawMoney(std::string name, std::
     {
         throw std::invalid_argument(ia.what());
     }
+}
+
+// Function to transfer money from one account to another, if it exists
+std::pair<Currency, float> AccountManager::transferMoney(std::string name, std::string password, int accountID, std::string targetName, int targetAccountID, float amount) /* throw(std::invalid_argument) */ {
+    try
+    {
+        AccountManager::checkAccount(name, password, accountID);
+        AccountManager::checkTargetAccount(targetName, targetAccountID);
+
+        auto account = this->activeAccounts[accountID]->withdrawMoney(amount);
+        Currency currency = this->activeAccounts[accountID]->getCurrency();
+        Currency targetCurrency = this->activeAccounts[targetAccountID]->getCurrency();
+        float newAmount = amount * AccountManager::getExchangeRate(currency, targetCurrency);
+        this->activeAccounts[targetAccountID]->depositMoney(newAmount);
+
+        return account;
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        throw std::invalid_argument(ia.what());
+    } 
 }
 
 // Getter: activeAccounts

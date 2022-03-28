@@ -32,5 +32,5 @@ class Account {
 
         void changePassword(std::string newPassword);
         std::pair<Currency, float> depositMoney(float amount);
-        std::pair<Currency, float> withdrawMoney(float amount);        
+        std::pair<Currency, float> withdrawMoney(float amount);      
 };

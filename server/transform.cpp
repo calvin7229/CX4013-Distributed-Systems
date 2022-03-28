@@ -56,9 +56,22 @@ int transform::unmarshalInt(char* bytes) {
     return output;
 }
 
+void printBinary(char c) {
+    for (int i = 7; i >= 0; --i) {
+        std::cout << ((c & (1 << i))? '1' : '0');
+    }
+}
+
 // Function to transform marshalled data into a float value
 float transform::unmarshalFloat(char* bytes) {
     float output;
+
+    // for (int i = 0; i < 4; i++) {
+    //     std::cout << "bin at index " << i << ", val: " << std::endl;
+    //     printBinary(*(bytes+i));
+    // std::cout << std::endl;
+
+    // }
 
     int integerRep = transform::unmarshalInt(bytes);
     memcpy(&output, &integerRep, 4);
