@@ -9,6 +9,14 @@ import client.Utils;
 
 public class DepositHandler extends Handler {
     
+
+    /**
+     * Get user input and and marshall into packet to be sent to server
+     * @param scanner {@code Scanner} object to read input from user.
+     * @param id {@code int} id of the request.
+     * @return {@code byte[]} body package to be sent to server.
+     * @throws UnsupportedEncodingException
+     */
     @Override
     public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Deposit Money to Account:");
@@ -82,6 +90,12 @@ public class DepositHandler extends Handler {
 
         return packageByte;
     }
+
+    /**
+     * Handle response recieved from server
+     * @param response {@code byte[]} response packet recieved from server.
+     * @throws IOException
+     */
     @Override
     public void handleResponse(byte[] response) throws IOException{
         int index = 0;

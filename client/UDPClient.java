@@ -2,6 +2,7 @@ package client;
 
 import java.io.*;
 import java.net.*;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 
@@ -111,86 +112,91 @@ class UDPClient{
 
         boolean exit = false;
         while(!exit){
-        System.out.println(
-            "Please enter selection:\n" +
-            "1. Open New Account\n" +
-            "2. Deposit\n" +
-            "3. Withdraw\n" +
-            "4. Transfer\n" +
-            "5. Check Balance\n" +
-            "6. Close Account\n" +
-            "7. Monitor Update\n" +
-            "8. Exit");
+            System.out.println(
+                "Please enter selection:\n" +
+                "1. Open New Account\n" +
+                "2. Deposit\n" +
+                "3. Withdraw\n" +
+                "4. Transfer\n" +
+                "5. Check Balance\n" +
+                "6. Close Account\n" +
+                "7. Monitor Update\n" +
+                "8. Exit");
 
-        
-        
-        //Temp variables and buffers for passing parameters
-        Scanner scanner = new Scanner(System.in);
-        String msg = scanner.nextLine();
-        int selection = Integer.parseInt(msg);
-        byte[] packageByte = null;
-        int currID = udpclient.getID();
-        boolean send= true;
-        Handler handler = null;
+            
+            
+            //Temp variables and buffers for passing parameters
+            Scanner scanner = new Scanner(System.in);
+            String msg = scanner.nextLine();
+            int selection = Integer.parseInt(msg);
+            byte[] packageByte = null;
+            int currID = udpclient.getID();
+            boolean send= true;
+            Handler handler = null;
 
-        switch (selection){
-            
-            case 1:
-                handler = new OpenAccountHandler();
-                break;
-            case 2:
-                handler = new DepositHandler();
-                break;
-            case 3:
-                handler = new WithdrawHandler();
-                break;
-            case 4:
-                handler = new TransferHandler();
-                break;
-            case 5:
-                handler = new CheckBalanceHandler();
-                break;
-            case 6:
-                handler = new CloseAccountHandler();
-                break;
-            case 7:
-                handler = new MonitorUpdateHandler();
-                break;
-            case 8:
-                System.out.println("Exit");
-                exit = true;
-                send = false;
-                break;
-            default:
-                System.out.println("Invalid selection");
-                send = false;
-                break;
-        }
-        if (send){
-            
-            packageByte = handler.executeService(scanner, currID);
-            byte[] receivedbytes = udpclient.SendAndReceive(packageByte);
-            if (selection != 7){
-                handler.handleResponse(receivedbytes);
+            switch (selection){
+                
+                case 1:
+                    handler = new OpenAccountHandler();
+                    break;
+                case 2:
+                    handler = new DepositHandler();
+                    break;
+                case 3:
+                    handler = new WithdrawHandler();
+                    break;
+                case 4:
+                    handler = new TransferHandler();
+                    break;
+                case 5:
+                    handler = new CheckBalanceHandler();
+                    break;
+                case 6:
+                    handler = new CloseAccountHandler();
+                    break;
+                case 7:
+                    handler = new MonitorUpdateHandler();
+                    break;
+                case 8:
+                    System.out.println("Exit");
+                    exit = true;
+                    send = false;
+                    break;
+                default:
+                    System.out.println("Invalid selection");
+                    send = false;
+                    break;
             }
-            else{
-                do{
-                    byte[] update = udpclient.Receive(true);
-                    //check if ack/status is '2' -> stop subscription
-                    int index = 0;
-                    int id = Utils.unmarshalInteger(update, index);
-                    String status = Utils.unmarshalString(update, index,Constants.INT_SIZE+index+1);
-                    if (status.charAt(0) == '2'){
-                        break;
-                    }
-                    handler.handleResponse(update);
-                } while(true);
+            if (send){
+                
+                packageByte = handler.executeService(scanner, currID);
+                byte[] receivedbytes = udpclient.SendAndReceive(packageByte);
+                if (selection != 7){
+                    handler.handleResponse(receivedbytes);
+                }
+                else{
+                    handler.handleResponse(receivedbytes);
+                    //Upon subscription success, endtime is updated and proceeds to listen for update.
+                    do{
+                        try{
+                        byte[] update = udpclient.Receive(true);
+                        
+                        
+                        int index = 0;
+                        //update message length
+                        int length = Utils.unmarshalInteger(update, index);
+                        index+=Constants.INT_SIZE;
+                        //update message
+                        String message = Utils.unmarshalString(update, index,index+length);
+                        System.out.println(message);
+                        }
+                        catch(SocketTimeoutException e){
+                            System.out.println("Timeout!");
+                            continue;
+                        }
+                    } while(Instant.now().getEpochSecond()<handler.getEndTime());
+                }
             }
-        }
-        
-
-            
-
         }
 
     

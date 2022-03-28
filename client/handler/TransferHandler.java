@@ -6,8 +6,17 @@ import java.util.Scanner;
 
 import client.Constants;
 import client.Utils;
-
+/**
+ * Handler class to handle transfer service
+ */
 public class TransferHandler extends Handler{
+    /**
+     * executeService method to handle get user input and package it into a byte array to be sent to server
+     * @param scanner {@code Scanner} Scanner object for user input.
+     * @param id {@code int} Id of the client.
+     * @return packageByte {@code byte[]} Byte array of the package with user input marshalled.
+     * @throws UnsupportedEncodingException
+     */
     @Override
     public byte[] executeService(Scanner scanner, int currID)throws UnsupportedEncodingException{
         // Enter Name

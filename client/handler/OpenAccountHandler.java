@@ -91,6 +91,12 @@ public class OpenAccountHandler extends Handler {
 
         return packageByte;
     }
+    /**
+     * Handle the response received by the server
+     * @param response
+     * @throws IOException
+     * 
+     */
     @Override
     public void handleResponse(byte[] response) throws IOException{
         int index = 0;

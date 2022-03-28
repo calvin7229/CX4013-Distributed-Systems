@@ -5,8 +5,17 @@ import java.lang.*;
 import java.util.*;
 import client.Utils;
 import client.Constants;
-
+/**
+ * Handler class for closing account.
+ */
 public class CloseAccountHandler extends Handler{
+
+    /**
+     * executeService method for closing account.
+     * @param scanner {@code Scanner} Scanner object for user input.
+     * @param id {@code int} Id of the client.
+     * @return packageByte {@code byte[]} Byte array of the package with user input marshalled.
+     */
     @Override
     public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Close Account:");
