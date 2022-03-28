@@ -83,22 +83,13 @@ void UDPServer::send(const char* buffer, size_t bufferSize) {
 
 // Function to send message on the server socket through UDP with specific client address
 void UDPServer::send(const char* buffer, size_t bufferSize, sockaddr_in clientAddr) {
-    // size_t cl;
-    // sockaddr_in ca;
-
-    // cl = sizeof(ca);
-    // ca.sin_family = AF_INET;
-    // ca.sin_port = htonl(INADDR_ANY);
-    // ca.sin_addr.s_addr = inet_addr() clientAddr;
-    // std::memset(&ca, 0, sizeof(ca));
-
     int turn_on = 1;
     int retval = setsockopt(this->sockfd, SOL_SOCKET, SO_BROADCAST, &turn_on, (socklen_t)sizeof(turn_on));
-    std::cout << "retval status: " << retval << std::endl;
+    // std::cout << "retval status: " << retval << std::endl;
 
     // Send bufferSize bytes of buffer on socket FD to peer at address clientAddr
     int i = sendto(this->sockfd, buffer, bufferSize, 0, (sockaddr*)&clientAddr, (socklen_t)sizeof(clientAddr));
-    std::cout << "Debug status: " << i << std::endl;
+    // std::cout << "Debug status: " << i << std::endl;
 }
 
 

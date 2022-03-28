@@ -198,8 +198,8 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
         // Prepare callback message
         std::string callback;
         std::stringstream ss;
-        ss << "Account OPENED by ";
-        ss << clientAddr << std::endl;
+        ss << "Account ID " << accountID << " OPENED by ";
+        ss << clientAddr;
         callback = ss.str();
 
         updateSubscribers(server, callback);
@@ -284,6 +284,15 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
             err = std::string(ia.what());
             bodySize += INT_SIZE + err.size();
         }
+        
+        // Prepare callback message
+        std::string callback;
+        std::stringstream ss;
+        ss << "Account ID " << accountID << " CLOSED by ";
+        ss << clientAddr;
+        callback = ss.str();
+
+        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -388,6 +397,15 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
             err = std::string(ia.what());
             bodySize += INT_SIZE + err.size();
         }
+
+        // Prepare callback message
+        std::string callback;
+        std::stringstream ss;
+        ss << "Money DEPOSITED into Account ID " << accountID << " by ";
+        ss << clientAddr;
+        callback = ss.str();
+
+        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -499,6 +517,15 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
             bodySize += INT_SIZE + err.size();
             std::cout << err << std::endl;
         }
+
+        // Prepare callback message
+        std::string callback;
+        std::stringstream ss;
+        ss << "Money WITHDRAWN from Account ID " << accountID << " by ";
+        ss << clientAddr;
+        callback = ss.str();
+
+        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -614,6 +641,15 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
             std::cout << err << std::endl;
         }
 
+        // Prepare callback message
+        std::string callback;
+        std::stringstream ss;
+        ss << "Money TRANSFERED from Account ID " << accountID << " to " << targetAccountID << " by ";
+        ss << clientAddr;
+        callback = ss.str();
+
+        updateSubscribers(server, callback);
+
         // Prepare response message
         char header[HEADER_SIZE];
         char body[bodySize];
@@ -716,6 +752,15 @@ void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
             bodySize += INT_SIZE + err.size();
             std::cout << err << std::endl;
         }
+
+        // Prepare callback message
+        std::string callback;
+        std::stringstream ss;
+        ss << "Account ID " << accountID << " CHECKED by ";
+        ss << clientAddr;
+        callback = ss.str();
+
+        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
