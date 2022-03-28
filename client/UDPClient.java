@@ -25,8 +25,7 @@ class UDPClient{
     }
 
     public int getID(){
-        this.idCounter++;
-        return this.idCounter;
+        return this.idCounter++;
     }
 
     public void setTimeout(int timeout) throws SocketException{
