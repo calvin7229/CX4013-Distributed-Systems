@@ -83,7 +83,6 @@ public class CloseAccountHandler extends Handler{
         }
         else{
             System.out.println("Close Account Successful");
-            //todo print acc number
         }
     }
 }

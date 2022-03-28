@@ -108,7 +108,8 @@ class UDPClient{
             "4. Transfer\n" +
             "5. Check Balance\n" +
             "6. Close Account\n" +
-            "7. Exit");
+            "7. Monitor Update\n" +
+            "8. Exit");
 
         
         
@@ -142,6 +143,9 @@ class UDPClient{
                 handler = new CloseAccountHandler();
                 break;
             case 7:
+                handler = new MonitorUpdateHandler();
+                break;
+            case 8:
                 System.out.println("Exit");
                 exit = true;
                 send = false;
@@ -155,7 +159,22 @@ class UDPClient{
             
             packageByte = handler.executeService(scanner, currID);
             byte[] receivedbytes = udpclient.SendAndReceive(packageByte);
-            handler.handleResponse(receivedbytes);
+            if (selection != 7){
+                handler.handleResponse(receivedbytes);
+            }
+            else{
+                do{
+                    byte[] update = udpclient.Receive(true);
+                    //check if ack/status is '2' -> stop subscription
+                    int index = 0;
+                    int id = Utils.unmarshalInteger(update, index);
+                    String status = Utils.unmarshalString(update, index,Constants.INT_SIZE+index+1);
+                    if (status.charAt(0) == '2'){
+                        break;
+                    }
+                    handler.handleResponse(update);
+                } while(true);
+            }
         }
         
 
