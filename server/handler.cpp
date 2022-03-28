@@ -346,22 +346,31 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
     } else {
         // Extract essential information to deposit money into an account
         std::string name, password;
-        int accountID, n;
+        Currency currency;
+        int accountID, n, temp;
         float amount;
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
         name = transform::unmarshalString(info, n);     info += n;
+        std::cout << "Account Name: " << name << std::endl;
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
         password = transform::unmarshalString(info, n); info += n;
+        std::cout << "Account Password: " << password << std::endl;
 
         accountID = transform::unmarshalInt(info);      info += INT_SIZE;
+        std::cout << "Account ID: " << accountID << std::endl;
+
+        temp = transform::unmarshalInt(info);           info += INT_SIZE;
+        currency = Account::getCurrency(temp);
+        std::cout << "Currency: " << currency << std::endl;
 
         amount = transform::unmarshalFloat(info);       info += INT_SIZE;
+        std::cout << "Deposit Amount: " << amount << std::endl;
 
         // Deposit the amount through Account Manager
         int bodySize = BASIC_RESPONSE_SIZE;
-        int currency;
+        int currencyInt;
         float balance;
         bool depositStatus;
         std::pair<Currency, float> accountDetails;
@@ -369,7 +378,7 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
 
         try
         {
-            accountDetails = AM.depositMoney(name, password, accountID, amount);
+            accountDetails = AM.depositMoney(name, password, accountID, currency, amount);
             bodySize += INT_SIZE + FLOAT_SIZE;
             depositStatus = true;
         }
@@ -393,8 +402,8 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
         if (depositStatus) {
             transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
             
-            currency = Account::getCurrencyIndex(accountDetails.first);
-            transform::marshalInt(currency, buffer);        buffer += INT_SIZE;
+            currencyInt = Account::getCurrencyIndex(accountDetails.first);
+            transform::marshalInt(currencyInt, buffer);     buffer += INT_SIZE;
 
             balance = accountDetails.second;
             transform::marshalFloat(balance, buffer);       buffer += FLOAT_SIZE;  
@@ -447,7 +456,8 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
     } else {
         // Extract essential information to withdraw money from an account
         std::string name, password;
-        int accountID, n;
+        Currency currency;
+        int accountID, n, temp;
         float amount;
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
@@ -461,12 +471,16 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
         accountID = transform::unmarshalInt(info);      info += INT_SIZE;
         std::cout << "Account ID: " << accountID << std::endl;
 
+        temp = transform::unmarshalInt(info);           info += INT_SIZE;
+        currency = Account::getCurrency(temp);
+        std::cout << "Currency: " << currency << std::endl;
+
         amount = transform::unmarshalFloat(info);       info += FLOAT_SIZE;
         std::cout << "Withdraw Amount: " << amount << std::endl;
 
         // Withdraw the amount through Account Manager
         int bodySize = BASIC_RESPONSE_SIZE;
-        int currency;
+        int currencyInt;
         float balance;
         bool withdrawStatus;
         std::pair<Currency, float> accountDetails;
@@ -474,7 +488,7 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
 
         try
         {
-            accountDetails = AM.withdrawMoney(name, password, accountID, amount);
+            accountDetails = AM.withdrawMoney(name, password, accountID, currency, amount);
             bodySize += INT_SIZE + FLOAT_SIZE;
             withdrawStatus = true;
         }
@@ -499,8 +513,8 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
         if (withdrawStatus) {
             transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
             
-            currency = Account::getCurrencyIndex(accountDetails.first);
-            transform::marshalInt(currency, buffer);        buffer += INT_SIZE;
+            currencyInt = Account::getCurrencyIndex(accountDetails.first);
+            transform::marshalInt(currencyInt, buffer);     buffer += INT_SIZE;
 
             balance = accountDetails.second;
             transform::marshalFloat(balance, buffer);       buffer += FLOAT_SIZE;  

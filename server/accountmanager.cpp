@@ -122,11 +122,13 @@ std::pair<Currency, float> AccountManager::checkAccountBalance(std::string name,
 
 
 // Function to deposit money and add to account's balance, if it exists
-std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::string password, int accountID, float amount) /* throw(std::invalid_argument) */ {
+std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::string password, int accountID, Currency currency, float amount) /* throw(std::invalid_argument) */ {
     try
     {
         AccountManager::checkAccount(name, password, accountID);
-        return this->activeAccounts[accountID]->depositMoney(amount);
+        Currency accountCurrency = this->activeAccounts[accountID]->getCurrency();
+        float newAmount = amount * getExchangeRate(currency, accountCurrency);
+        return this->activeAccounts[accountID]->depositMoney(newAmount);
     }
     catch(const std::invalid_argument& ia)
     {
@@ -136,11 +138,13 @@ std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::s
 
 
 // Function to withdraw money and deduct from account's balance, if it exists
-std::pair<Currency, float> AccountManager::withdrawMoney(std::string name, std::string password, int accountID, float amount) /* throw(std::invalid_argument) */ {
+std::pair<Currency, float> AccountManager::withdrawMoney(std::string name, std::string password, int accountID, Currency currency, float amount) /* throw(std::invalid_argument) */ {
     try
     {
         AccountManager::checkAccount(name, password, accountID);
-        return this->activeAccounts[accountID]->withdrawMoney(amount);
+        Currency accountCurrency = this->activeAccounts[accountID]->getCurrency();
+        float newAmount = amount * getExchangeRate(currency, accountCurrency);
+        return this->activeAccounts[accountID]->withdrawMoney(newAmount);
     }
     catch(const std::invalid_argument& ia)
     {
