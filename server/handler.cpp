@@ -4,6 +4,7 @@ using namespace constants;
 
 const int BASIC_RESPONSE_SIZE = ID_SIZE + ACK_SIZE;
 
+
 // Class constructor
 Handler::Handler(double failureRate) {
     std::random_device device;
