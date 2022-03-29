@@ -6,7 +6,7 @@ const int BASIC_RESPONSE_SIZE = ID_SIZE + ACK_SIZE;
 
 
 // Class constructor
-Handler::Handler(double failureRate) {
+Handler::Handler(int mode, double failureRate) {
     std::random_device device;
 
     this->AM = AccountManager();
@@ -16,6 +16,7 @@ Handler::Handler(double failureRate) {
 
     this->cache.clear();
     this->responseID = 0;
+    this->mode = mode;
     this->failureRate = failureRate;
 }
 
@@ -130,8 +131,12 @@ void Handler::notify(UDPServer& server, char* header, char* body, int bodySize, 
 
 // Function to handle duplicate requests
 void Handler::accessDuplicates(UDPServer& server, unsigned long clientAddr, int requestID) {
+    struct in_addr ca;
+    ca.s_addr = clientAddr;
+    char *dot_ip = inet_ntoa(ca);
+
     std::cout << "Duplicate found!" << std::endl; 
-    std::cout << "Client Address: " << clientAddr << std::endl; 
+    std::cout << "Client Address: " << UDPServer::getAddressString(ca) << std::endl; 
     std::cout << "Request ID: " << requestID << std::endl; 
     std::string s = cache[{clientAddr, requestID}];
     int bodySize = s.size();
@@ -167,7 +172,7 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
     auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
-    if (cache.find({clientAddr, requestID}) != cache.end()) {
+    if (mode == 1 && (cache.find({clientAddr, requestID}) != cache.end())) {
         accessDuplicates(server, clientAddr, requestID);
     } else {
         // Extract essential information to open an account
@@ -218,11 +223,13 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
         transform::marshalInt(accountID, buffer);       buffer += INT_SIZE;
 
         // Save buffer result into cache
-        std::string s = std::string(body, bodySize);
+        if (mode == 1) {
+            std::string s = std::string(body, bodySize);
 
-        cache[{clientAddr, requestID}] = s;
+            cache[{clientAddr, requestID}] = s;
 
-        answer(server, header, body, bodySize);
+            answer(server, header, body, bodySize);
+        }
     }
 }
 
@@ -254,7 +261,7 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
     auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
-    if (cache.find({clientAddr, requestID}) != cache.end()) {
+    if (mode == 1 && (cache.find({clientAddr, requestID}) != cache.end())) {
         accessDuplicates(server, clientAddr, requestID);
     } else {
         // Extract essential information to close an account
@@ -318,11 +325,13 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
         }
 
         // Save buffer result into cache
-        std::string s = std::string(body, bodySize);
+        if (mode == 1) {
+            std::string s = std::string(body, bodySize);
 
-        cache[{clientAddr, requestID}] = s;
+            cache[{clientAddr, requestID}] = s;
 
-        answer(server, header, body, bodySize);
+            answer(server, header, body, bodySize);
+        }
     }
 }
 
@@ -356,7 +365,7 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
     auto clientA = server.getClientAddr().sin_addr;
     
     // Check if request ID already in cache
-    if (cache.find({clientAddr, requestID}) != cache.end()) {
+    if (mode == 1 && (cache.find({clientAddr, requestID}) != cache.end())) {
         accessDuplicates(server, clientAddr, requestID);
     } else {
         // Extract essential information to deposit money into an account
@@ -438,11 +447,13 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
         }
 
         // Save buffer result into cache
-        std::string s = std::string(body, bodySize);
+        if (mode == 1) {
+            std::string s = std::string(body, bodySize);
 
-        cache[{clientAddr, requestID}] = s;
+            cache[{clientAddr, requestID}] = s;
 
-        answer(server, header, body, bodySize);
+            answer(server, header, body, bodySize);
+        }
     }
 }
 
@@ -476,7 +487,7 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
     auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
-    if (cache.find({clientAddr, requestID}) != cache.end()) {
+    if (mode == 1 && (cache.find({clientAddr, requestID}) != cache.end())) {
         accessDuplicates(server, clientAddr, requestID);
     } else {
         // Extract essential information to withdraw money from an account
@@ -558,11 +569,13 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
         }
 
         // Save buffer result into cache
-        std::string s = std::string(body, bodySize);
+        if (mode == 1) {
+            std::string s = std::string(body, bodySize);
 
-        cache[{clientAddr, requestID}] = s;
+            cache[{clientAddr, requestID}] = s;
 
-        answer(server, header, body, bodySize);
+            answer(server, header, body, bodySize);
+        }
     }
 }
 
@@ -596,7 +609,7 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
     auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
-    if (cache.find({clientAddr, requestID}) != cache.end()) {
+    if (mode == 1 && (cache.find({clientAddr, requestID}) != cache.end())) {
         accessDuplicates(server, clientAddr, requestID);
     } else {
         // Extract essential information to transfer money from one account to another
@@ -680,11 +693,13 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
         }
 
         // Save buffer result into cache
-        std::string s = std::string(body, bodySize);
+        if (mode == 1) {
+            std::string s = std::string(body, bodySize);
 
-        cache[{clientAddr, requestID}] = s;
+            cache[{clientAddr, requestID}] = s;
 
-        answer(server, header, body, bodySize);
+            answer(server, header, body, bodySize);
+        }
     }
 }
 
@@ -718,7 +733,7 @@ void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
     auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
-    if (cache.find({clientAddr, requestID}) != cache.end()) {
+    if (mode == 1 && (cache.find({clientAddr, requestID}) != cache.end())) {
         accessDuplicates(server, clientAddr, requestID);
     } else {
         // Extract essential information to check an account's balance
@@ -790,11 +805,13 @@ void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
         }
 
         // Save buffer result into cache
-        std::string s = std::string(body, bodySize);
+        if (mode == 1) {
+            std::string s = std::string(body, bodySize);
 
-        cache[{clientAddr, requestID}] = s;
+            cache[{clientAddr, requestID}] = s;
 
-        answer(server, header, body, bodySize);
+            answer(server, header, body, bodySize);
+        }
     }
 }
 
@@ -815,7 +832,7 @@ void Handler::serviceSubscribe(UDPServer& server, char* info, int requestID) {
     auto clientA = server.getClientAddr();
 
     // Check if request ID already in cache
-    if (cache.find({clientAddr, requestID}) != cache.end()) {
+    if (mode == 1 && (cache.find({clientAddr, requestID}) != cache.end())) {
         accessDuplicates(server, clientAddr, requestID);
     } else {
         // Extract essential information to subscribe to server
@@ -846,17 +863,20 @@ void Handler::serviceSubscribe(UDPServer& server, char* info, int requestID) {
         transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
 
         // Save buffer result into cache
-        std::string s = std::string(body, bodySize);
+        if (mode == 1) {
+            std::string s = std::string(body, bodySize);
 
-        cache[{clientAddr, requestID}] = s;
+            cache[{clientAddr, requestID}] = s;
 
-        answer(server, header, body, bodySize);
+            answer(server, header, body, bodySize);
+        }
     }
 }
 
 
 // Callback function to update all active subscribers
 void Handler::updateSubscribers(UDPServer& server, std::string message) {
+    // Remove all expired subscribers, if any
     monitor.removeSubscribers();
 
     auto subscribers = monitor.getSubscribers();

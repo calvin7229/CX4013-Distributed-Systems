@@ -23,10 +23,11 @@ class Handler {
         const double high = 1.0;
         std::map<std::pair<unsigned long, int>, std::string> cache;
         int responseID;
+        int mode;
         double failureRate;
     
     public:
-        Handler(double failureRate);
+        Handler(int mode, double failureRate);
 
         int getResponseID();
 
