@@ -44,28 +44,32 @@ public class OpenAccountHandler extends Handler {
             System.out.printf("%d. %s\n", i, Constants.CURRENCY_STR[i]);
         }
         int currency = 0;
-        if(scanner.hasNextInt()){
-            currency = scanner.nextInt();
-        }
         while(currency < 1 || currency >= Constants.CURRENCY_STR.length){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please choose your account currency: ");
-            if(scanner.hasNextInt()){
-                currency = scanner.nextInt();
+            String temp = scanner.nextLine();
+            try{
+                currency = Integer.parseInt(temp);
+                if(currency < 1 || currency >= Constants.CURRENCY_STR.length){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please choose your account currency: ");
             }
         }
         
         // Enter Starting Balance
         System.out.print("Please enter account balance: ");
         Float balance = null;
-        if(scanner.hasNextFloat()){
-            balance = scanner.nextFloat();
-        }
         while(balance == null || balance < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter account balance: ");
-            if(scanner.hasNextFloat()){
-                balance = scanner.nextFloat();
+            String temp = scanner.nextLine();
+            try{
+                balance = Float.parseFloat(temp);
+                if(balance < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please enter account balance: ");
             }
         }
 

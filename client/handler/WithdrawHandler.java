@@ -31,45 +31,53 @@ public class WithdrawHandler extends Handler {
         }
 
         // Enter Account Number
-        System.out.println("Please enter your account number: ");
+        System.out.print("Please enter your account number: ");
         Integer account = null;
-        if(scanner.hasNextInt()){
-            account = scanner.nextInt();
-        }
         while(account == null || account < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter your account number: ");
-            if(scanner.hasNextInt()){
-                account = scanner.nextInt();
+            String temp = scanner.nextLine();
+            try{
+                account = Integer.parseInt(temp);
+                if(account < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please choose your account number: ");
             }
         }
+
         //currency
-        System.out.println("Please choose currency: ");
+        System.out.println("Please choose your account currency: ");
         for (int i = 1; i < Constants.CURRENCY_STR.length; i++){
             System.out.printf("%d. %s\n", i, Constants.CURRENCY_STR[i]);
         }
         int currency = 0;
-        if(scanner.hasNextInt()){
-            currency = scanner.nextInt();
-        }
         while(currency < 1 || currency >= Constants.CURRENCY_STR.length){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please choose your account currency: ");
-            if(scanner.hasNextInt()){
-                currency = scanner.nextInt();
+            String temp = scanner.nextLine();
+            try{
+                currency = Integer.parseInt(temp);
+                if(currency < 1 || currency >= Constants.CURRENCY_STR.length){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please choose your account currency: ");
             }
         }
+
         // Enter Amount
         System.out.print("Please enter withdraw amount: ");
         Float amount = null;
-        if(scanner.hasNextFloat()){
-            amount = scanner.nextFloat();
-        }
         while(amount == null || amount < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter withdraw amount: ");
-            if(scanner.hasNextFloat()){
-                amount = scanner.nextFloat();
+            String temp = scanner.nextLine();
+            try{
+                amount = Float.parseFloat(temp);
+                if(amount < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please enter withdraw amount: ");
             }
         }
 

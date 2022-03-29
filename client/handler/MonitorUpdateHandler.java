@@ -32,14 +32,16 @@ public class MonitorUpdateHandler extends Handler{
         // Enter Duration in Seconds
         System.out.println("Please enter the monitor duration in seconds: ");
         Integer duration = null;
-        if(scanner.hasNextInt()){
-            duration = scanner.nextInt();
-        }
         while(duration == null || duration < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter the monitor duration: ");
-            if(scanner.hasNextInt()){
-                duration = scanner.nextInt();
+            String temp = scanner.nextLine();
+            try{
+                duration = Integer.parseInt(temp);
+                if(duration < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please enter the monitor duration in seconds: ");
             }
         }
         

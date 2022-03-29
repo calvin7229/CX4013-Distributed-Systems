@@ -39,16 +39,18 @@ public class CloseAccountHandler extends Handler{
         }
 
         // Enter Account Number
-        System.out.println("Please enter your account number: ");
+        System.out.print("Please enter your account number: ");
         Integer account = null;
-        if(scanner.hasNextInt()){
-            account = scanner.nextInt();
-        }
         while(account == null || account < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter your account number: ");
-            if(scanner.hasNextInt()){
-                account = scanner.nextInt();
+            String temp = scanner.nextLine();
+            try{
+                account = Integer.parseInt(temp);
+                if(account < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please enter your account number: ");
             }
         }
 

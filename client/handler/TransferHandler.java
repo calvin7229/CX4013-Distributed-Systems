@@ -38,19 +38,22 @@ public class TransferHandler extends Handler{
         }
 
         // Enter Account Number
-        System.out.println("Please enter your account number: ");
+        System.out.print("Please enter your account number: ");
         Integer account = null;
-        if(scanner.hasNextInt()){
-            account = scanner.nextInt();
-        }
         while(account == null || account < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter your account number: ");
-            if(scanner.hasNextInt()){
-                account = scanner.nextInt();
+            String temp = scanner.nextLine();
+            try{
+                account = Integer.parseInt(temp);
+                if(account < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please choose your account number: ");
             }
         }
-        String dummy = scanner.nextLine();
+
+        //String dummy = scanner.nextLine();
 
         //Enter Target Name
         System.out.print("Please enter target name: ");
@@ -65,28 +68,32 @@ public class TransferHandler extends Handler{
         // Enter Target Account Number
         System.out.println("Please enter target account number: ");
         Integer targetAccount = null;
-        if(scanner.hasNextInt()){
-            targetAccount = scanner.nextInt();
-        }
-        while(account == null || account < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter target account number: ");
-            if(scanner.hasNextInt()){
-                targetAccount = scanner.nextInt();
+        while(targetAccount == null || targetAccount < 0){
+            String temp = scanner.nextLine();
+            try{
+                targetAccount = Integer.parseInt(temp);
+                if(targetAccount < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please choose target account number: ");
             }
         }
 
         // Enter Transfer Amount
         System.out.print("Please enter transfer amount: ");
         Float amount = null;
-        if(scanner.hasNextFloat()){
-            amount = scanner.nextFloat();
-        }
         while(amount == null || amount < 0){
-            System.out.println("Invalid input. Please try again.");
-            System.out.println("Please enter transfer amount: ");
-            if(scanner.hasNextFloat()){
-                amount = scanner.nextFloat();
+            String temp = scanner.nextLine();
+            try{
+                amount = Float.parseFloat(temp);
+                if(amount < 0){
+                    throw new IllegalArgumentException();
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Invalid input. Please try again.");
+                System.out.print("Please enter trasnfer amount: ");
             }
         }
 
