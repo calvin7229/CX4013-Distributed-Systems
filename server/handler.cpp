@@ -164,6 +164,7 @@ void Handler::accessDuplicates(UDPServer& server, unsigned long clientAddr, int 
 */
 void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
     auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+    auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
     if (cache.find({clientAddr, requestID}) != cache.end()) {
@@ -177,7 +178,6 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
         name = transform::unmarshalString(info, n);     info += n;
-        std::cout << "Client Addr: " << clientAddr << std::endl;
         std::cout << "Account Name: " << name << std::endl;
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
@@ -186,7 +186,7 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
 
         temp = transform::unmarshalInt(info);           info += INT_SIZE;
         currency = Account::getCurrency(temp);
-        std::cout << "Account Currency: " << currency << std::endl;
+        std::cout << "Account Currency: " << Account::getCurrencyString(currency) << std::endl;
 
         balance = transform::unmarshalFloat(info);      info += INT_SIZE;
         std::cout << "Account Balance: " << balance << std::endl;
@@ -199,7 +199,7 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
         std::string callback;
         std::stringstream ss;
         ss << "Account ID " << accountID << " OPENED by ";
-        ss << clientAddr;
+        ss << UDPServer::getAddressString(clientA);
         callback = ss.str();
 
         updateSubscribers(server, callback);
@@ -251,6 +251,7 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
 */
 void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
     auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+    auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
     if (cache.find({clientAddr, requestID}) != cache.end()) {
@@ -262,11 +263,14 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
         name = transform::unmarshalString(info, n);     info += n;
+        std::cout << "Account Name: " << name << std::endl;
 
         n = transform::unmarshalInt(info);              info += INT_SIZE;
         password = transform::unmarshalString(info, n); info += n;
+        std::cout << "Account Password: " << password << std::endl;
 
         accountID = transform::unmarshalInt(info);      info += INT_SIZE;
+        std::cout << "Account ID: " << accountID << std::endl;
 
         // Close the account through Account Manager
         int bodySize = BASIC_RESPONSE_SIZE;
@@ -283,16 +287,8 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
             closeStatus = false;
             err = std::string(ia.what());
             bodySize += INT_SIZE + err.size();
+            std::cout << err << std::endl;
         }
-        
-        // Prepare callback message
-        std::string callback;
-        std::stringstream ss;
-        ss << "Account ID " << accountID << " CLOSED by ";
-        ss << clientAddr;
-        callback = ss.str();
-
-        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -305,6 +301,15 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
         buffer += ID_SIZE;
 
         if (closeStatus) {
+            // Prepare callback message
+            std::string callback;
+            std::stringstream ss;
+            ss << "Account ID " << accountID << " CLOSED by ";
+            ss << UDPServer::getAddressString(clientA);
+            callback = ss.str();
+
+            updateSubscribers(server, callback);
+
             transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
         } else {
             transform::marshalChar(ACK_FAIL, buffer);       buffer += ACK_SIZE;
@@ -348,6 +353,7 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
 */
 void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
     auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+    auto clientA = server.getClientAddr().sin_addr;
     
     // Check if request ID already in cache
     if (cache.find({clientAddr, requestID}) != cache.end()) {
@@ -372,7 +378,7 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
 
         temp = transform::unmarshalInt(info);           info += INT_SIZE;
         currency = Account::getCurrency(temp);
-        std::cout << "Currency: " << currency << std::endl;
+        std::cout << "Currency: " << Account::getCurrencyString(currency) << std::endl;
 
         amount = transform::unmarshalFloat(info);       info += INT_SIZE;
         std::cout << "Deposit Amount: " << amount << std::endl;
@@ -396,16 +402,8 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
             depositStatus = false;
             err = std::string(ia.what());
             bodySize += INT_SIZE + err.size();
+            std::cout << err << std::endl;
         }
-
-        // Prepare callback message
-        std::string callback;
-        std::stringstream ss;
-        ss << "Money DEPOSITED into Account ID " << accountID << " by ";
-        ss << clientAddr;
-        callback = ss.str();
-
-        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -418,11 +416,19 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
         buffer += ID_SIZE;
 
         if (depositStatus) {
+            // Prepare callback message
+            std::string callback;
+            std::stringstream ss;
+            ss << Account::getCurrencyString(currency) << " " << amount;
+            ss << " DEPOSITED into Account ID " << accountID << " by ";
+            ss << UDPServer::getAddressString(clientA);
+            callback = ss.str();
+
+            updateSubscribers(server, callback);
+
             transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
-            
             currencyInt = Account::getCurrencyIndex(accountDetails.first);
             transform::marshalInt(currencyInt, buffer);     buffer += INT_SIZE;
-
             balance = accountDetails.second;
             transform::marshalFloat(balance, buffer);       buffer += FLOAT_SIZE;  
         } else {
@@ -467,6 +473,7 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
 */
 void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
     auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+    auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
     if (cache.find({clientAddr, requestID}) != cache.end()) {
@@ -491,7 +498,7 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
 
         temp = transform::unmarshalInt(info);           info += INT_SIZE;
         currency = Account::getCurrency(temp);
-        std::cout << "Currency: " << currency << std::endl;
+        std::cout << "Currency: " << Account::getCurrencyString(currency) << std::endl;
 
         amount = transform::unmarshalFloat(info);       info += FLOAT_SIZE;
         std::cout << "Withdraw Amount: " << amount << std::endl;
@@ -512,20 +519,11 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
         }
         catch(const std::invalid_argument& ia)
         {
-            err = std::string(ia.what());
             withdrawStatus = false;
+            err = std::string(ia.what());
             bodySize += INT_SIZE + err.size();
             std::cout << err << std::endl;
         }
-
-        // Prepare callback message
-        std::string callback;
-        std::stringstream ss;
-        ss << "Money WITHDRAWN from Account ID " << accountID << " by ";
-        ss << clientAddr;
-        callback = ss.str();
-
-        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -538,17 +536,24 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
         buffer += ID_SIZE;
 
         if (withdrawStatus) {
+            // Prepare callback message
+            std::string callback;
+            std::stringstream ss;
+            ss << Account::getCurrencyString(currency) << " " << amount;
+            ss << " WITHDRAWN from Account ID " << accountID << " by ";
+            ss << UDPServer::getAddressString(clientA);
+            callback = ss.str();
+
+            updateSubscribers(server, callback);
+
             transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
-            
             currencyInt = Account::getCurrencyIndex(accountDetails.first);
             transform::marshalInt(currencyInt, buffer);     buffer += INT_SIZE;
-
             balance = accountDetails.second;
             transform::marshalFloat(balance, buffer);       buffer += FLOAT_SIZE;  
         } else {
             transform::marshalChar(ACK_FAIL, buffer);       buffer += ACK_SIZE;
             transform::marshalInt(err.size(), buffer);      buffer += INT_SIZE;
-            std::cout << err.size() << std::endl;
             transform::marshalString(err, buffer);          buffer += err.size();
         }
 
@@ -588,6 +593,7 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
 */
 void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
     auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+    auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
     if (cache.find({clientAddr, requestID}) != cache.end()) {
@@ -616,7 +622,7 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
         targetAccountID = transform::unmarshalInt(info);    info += INT_SIZE;
         std::cout << "Target Account ID: " << targetAccountID << std::endl;
 
-        amount = transform::unmarshalFloat(info);       info += FLOAT_SIZE;
+        amount = transform::unmarshalFloat(info);           info += FLOAT_SIZE;
         std::cout << "Transfer Amount: " << amount << std::endl;
 
         // Transfer the amount through Account Manager
@@ -635,20 +641,11 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
         }
         catch(const std::invalid_argument& ia)
         {
-            err = std::string(ia.what());
             transferStatus = false;
+            err = std::string(ia.what());
             bodySize += INT_SIZE + err.size();
             std::cout << err << std::endl;
         }
-
-        // Prepare callback message
-        std::string callback;
-        std::stringstream ss;
-        ss << "Money TRANSFERED from Account ID " << accountID << " to " << targetAccountID << " by ";
-        ss << clientAddr;
-        callback = ss.str();
-
-        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -661,17 +658,24 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
         buffer += ID_SIZE;
 
         if (transferStatus) {
+            // Prepare callback message
+            std::string callback;
+            std::stringstream ss;
+            ss << Account::getCurrencyString(accountDetails.first) << " " << amount;
+            ss << " TRANSFERED from Account ID " << accountID << " to " << targetAccountID << " by ";
+            ss << UDPServer::getAddressString(clientA);
+            callback = ss.str();
+
+            updateSubscribers(server, callback);
+
             transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
-            
             currency = Account::getCurrencyIndex(accountDetails.first);
             transform::marshalInt(currency, buffer);        buffer += INT_SIZE;
-
             balance = accountDetails.second;
             transform::marshalFloat(balance, buffer);       buffer += FLOAT_SIZE;  
         } else {
             transform::marshalChar(ACK_FAIL, buffer);       buffer += ACK_SIZE;
             transform::marshalInt(err.size(), buffer);      buffer += INT_SIZE;
-            std::cout << err.size() << std::endl;
             transform::marshalString(err, buffer);          buffer += err.size();
         }
 
@@ -711,6 +715,7 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
 */
 void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
     auto clientAddr = server.getClientAddr().sin_addr.s_addr;
+    auto clientA = server.getClientAddr().sin_addr;
 
     // Check if request ID already in cache
     if (cache.find({clientAddr, requestID}) != cache.end()) {
@@ -747,20 +752,11 @@ void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
         }
         catch(const std::invalid_argument& ia)
         {
-            err = std::string(ia.what());
             balanceStatus = false;
+            err = std::string(ia.what());
             bodySize += INT_SIZE + err.size();
             std::cout << err << std::endl;
         }
-
-        // Prepare callback message
-        std::string callback;
-        std::stringstream ss;
-        ss << "Account ID " << accountID << " CHECKED by ";
-        ss << clientAddr;
-        callback = ss.str();
-
-        updateSubscribers(server, callback);
 
         // Prepare response message
         char header[HEADER_SIZE];
@@ -773,17 +769,23 @@ void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
         buffer += ID_SIZE;
 
         if (balanceStatus) {
+            // Prepare callback message
+            std::string callback;
+            std::stringstream ss;
+            ss << "Account ID " << accountID << " CHECKED by ";
+            ss << UDPServer::getAddressString(clientA);
+            callback = ss.str();
+
+            updateSubscribers(server, callback);
+
             transform::marshalChar(ACK_SUCCESS, buffer);    buffer += ACK_SIZE;
-            
             currency = Account::getCurrencyIndex(accountDetails.first);
             transform::marshalInt(currency, buffer);        buffer += INT_SIZE;
-
             balance = accountDetails.second;
             transform::marshalFloat(balance, buffer);       buffer += FLOAT_SIZE;  
         } else {
             transform::marshalChar(ACK_FAIL, buffer);       buffer += ACK_SIZE;
             transform::marshalInt(err.size(), buffer);      buffer += INT_SIZE;
-            std::cout << err.size() << std::endl;
             transform::marshalString(err, buffer);          buffer += err.size();
         }
 
@@ -820,7 +822,7 @@ void Handler::serviceSubscribe(UDPServer& server, char* info, int requestID) {
         int durationSec;
 
         durationSec = transform::unmarshalInt(info);      info += INT_SIZE;
-        std::cout << "Client Address: " << clientAddr << std::endl;
+        std::cout << "Client Address: " << UDPServer::getAddressString(clientA.sin_addr) << std::endl;
         std::cout << "Monitor Duration (Sec): " << durationSec << std::endl;
 
         // Add client to subscribers list
@@ -874,6 +876,6 @@ void Handler::updateSubscribers(UDPServer& server, std::string message) {
         sockaddr_in clientAddr = pair.first;
 
         notify(server, header, body, bodySize, clientAddr);
-        std::cout << "Subscriber Address: " << clientAddr.sin_addr.s_addr << std::endl;
+        std::cout << "Subscriber Address: " << UDPServer::getAddressString(clientAddr.sin_addr) << std::endl;
     }
 }

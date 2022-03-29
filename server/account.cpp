@@ -22,16 +22,6 @@ std::string Account::getPassword() {
 }
 
 
-// Getter: currency (in type std::string) 
-std::string Account::getCurrencyString() {
-    std::string currencies[] = {
-        "SGD",  "MYR", "GBP", "USD"
-    };
-
-    return currencies[getCurrencyIndex(this->currency)];
-}
-
-
 // Getter: currency
 Currency Account::getCurrency() {
     return this->currency;
@@ -48,6 +38,16 @@ Currency Account::getCurrency(int index) {
 int Account::getCurrencyIndex(Currency currency) {
     return static_cast<int>(currency);
 } 
+
+
+// Getter: currency (in type std::string) 
+std::string Account::getCurrencyString(Currency currency) {
+    std::string currencies[] = {
+        "SGD",  "MYR", "GBP", "USD"
+    };
+
+    return currencies[getCurrencyIndex(currency)];
+}
 
 
 // Getter: balance

@@ -2,7 +2,9 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <unordered_map>
+
 #include "account.h"
 
 class AccountManager {
@@ -23,7 +25,5 @@ class AccountManager {
         std::pair<Currency, float> depositMoney(std::string name, std::string password, int accountID, Currency currency, float amount);
         std::pair<Currency, float> withdrawMoney(std::string name, std::string password, int accountID, Currency currency, float amount);
         std::pair<Currency, float> transferMoney(std::string name, std::string password, int accountID, std::string targetName, int targetAccountID, float amount);
-
-        // to be removed in the future
         std::unordered_map<int, Account*> getActiveAccounts();
 };

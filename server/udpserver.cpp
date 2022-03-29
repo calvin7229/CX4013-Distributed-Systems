@@ -103,3 +103,11 @@ sockaddr_in UDPServer::getClientAddr() {
 size_t UDPServer::getClientLen() {
     return this->clientLen;
 }
+
+
+// Getter: IP address in string form
+std::string UDPServer::getAddressString(in_addr address) {
+    char* dotIP = inet_ntoa(address);
+
+    return std::string(dotIP);
+}

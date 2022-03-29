@@ -86,7 +86,7 @@ float AccountManager::getExchangeRate(Currency currency, Currency targetCurrency
         return 1;
     }
     
-    std::unordered_map<std::pair<Currency, Currency>, float> rates = {
+    std::map<std::pair<Currency, Currency>, float> rates = {
         {{SGD, MYR}, 3.09},
         {{SGD, GBP}, 0.56},
         {{SGD, USD}, 0.73},
@@ -128,6 +128,9 @@ std::pair<Currency, float> AccountManager::depositMoney(std::string name, std::s
         AccountManager::checkAccount(name, password, accountID);
         Currency accountCurrency = this->activeAccounts[accountID]->getCurrency();
         float newAmount = amount * getExchangeRate(currency, accountCurrency);
+        std::cout << "Target Currency: " << currency << std::endl;
+        std::cout << "Account Currency: " << accountCurrency << std::endl;
+        std::cout << "Exchange Rate: " << getExchangeRate(currency, accountCurrency) << std::endl;
         return this->activeAccounts[accountID]->depositMoney(newAmount);
     }
     catch(const std::invalid_argument& ia)

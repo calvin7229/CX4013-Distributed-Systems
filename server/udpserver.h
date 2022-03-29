@@ -23,7 +23,7 @@ class UDPServer {
         void send(const char* buffer, size_t bufferSize);
         void send(const char* buffer, size_t bufferSize, sockaddr_in clientAddr);
 
-
         sockaddr_in getClientAddr();
         size_t getClientLen();
+        static std::string getAddressString(in_addr address);
 };
