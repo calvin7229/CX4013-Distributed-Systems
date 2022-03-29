@@ -87,6 +87,7 @@ class UDPClient{
         DatagramPacket responsePacket = new DatagramPacket(response, response.length);
         this.clientSocket.receive(responsePacket);
         response = responsePacket.getData();
+        //Debug received packet
         StringBuilder sb = new StringBuilder();
         sb.append("[ ");
         for (byte b : response){
@@ -180,21 +181,23 @@ class UDPClient{
                     do{
                         try{
                         byte[] update = udpclient.Receive(true);
-                        
+                        int length= update.length;
                         
                         int index = 0;
                         //update message length
-                        int length = Utils.unmarshalInteger(update, index);
-                        index+=Constants.INT_SIZE;
+                        //int length = Utils.unmarshalInteger(update, index);
+                        //index+=Constants.INT_SIZE;
                         //update message
+                        System.out.println(length);
                         String message = Utils.unmarshalString(update, index,index+length);
                         System.out.println(message);
                         }
                         catch(SocketTimeoutException e){
-                            System.out.println("Timeout!");
+                            //System.out.println("Timeout!");
                             continue;
                         }
                     } while(Instant.now().getEpochSecond()<handler.getEndTime());
+                    System.out.println("Ending monitor....");
                 }
             }
         }

@@ -84,7 +84,7 @@ public class OpenAccountHandler extends Handler {
         index += Constants.INT_SIZE;
         Utils.marshal(password, packageByte, index);
         index += password.length();
-        Utils.marshal(currency, packageByte, index);
+        Utils.marshal(currency-1, packageByte, index);
         index += Constants.INT_SIZE;
         Utils.marshal(balance, packageByte, index);
         index += Constants.FLOAT_SIZE;

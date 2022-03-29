@@ -52,7 +52,21 @@ public class DepositHandler extends Handler {
                 account = scanner.nextInt();
             }
         }
-
+        System.out.println("Please choose currency: ");
+        for (int i = 1; i < Constants.CURRENCY_STR.length; i++){
+            System.out.printf("%d. %s\n", i, Constants.CURRENCY_STR[i]);
+        }
+        int currency = 0;
+        if(scanner.hasNextInt()){
+            currency = scanner.nextInt();
+        }
+        while(currency < 1 || currency >= Constants.CURRENCY_STR.length){
+            System.out.println("Invalid input. Please try again.");
+            System.out.println("Please choose your account currency: ");
+            if(scanner.hasNextInt()){
+                currency = scanner.nextInt();
+            }
+        }
         // Enter Deposit Amount
         System.out.print("Please enter deposit amount: ");
         Float amount = null;
@@ -68,7 +82,7 @@ public class DepositHandler extends Handler {
         }
 
 
-        int size = name.length() + password.length() + Constants.INT_SIZE*5 + Constants.FLOAT_SIZE;
+        int size = name.length() + password.length() + Constants.INT_SIZE*6 + Constants.FLOAT_SIZE;
         byte[] packageByte = new byte[size];
         int index = 0;
         Utils.marshal(id, packageByte, index);
@@ -84,6 +98,8 @@ public class DepositHandler extends Handler {
         Utils.marshal(password, packageByte, index);
         index += password.length();
         Utils.marshal(account, packageByte, index);
+        index += Constants.INT_SIZE;
+        Utils.marshal(currency-1, packageByte, index);
         index += Constants.INT_SIZE;
         Utils.marshal(amount, packageByte, index);
         index += Constants.FLOAT_SIZE;

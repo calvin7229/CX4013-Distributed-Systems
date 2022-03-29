@@ -50,8 +50,7 @@ public class TransferHandler extends Handler{
                 account = scanner.nextInt();
             }
         }
-
-        
+        String dummy = scanner.nextLine();
 
         //Enter Target Name
         System.out.print("Please enter target name: ");
@@ -91,7 +90,7 @@ public class TransferHandler extends Handler{
             }
         }
 
-        int size = name.length() + password.length() + targetName.length() + Constants.INT_SIZE*7 + Constants.FLOAT_SIZE;
+        int size = name.length() + password.length() + targetName.length() + Constants.INT_SIZE*8 + Constants.FLOAT_SIZE;
         byte[] packageByte = new byte[size];
         int index = 0;
         Utils.marshal(currID, packageByte, index);
