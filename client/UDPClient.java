@@ -71,7 +71,7 @@ class UDPClient{
         this.clientSocket.send(sendPacket);
     }
 
-    private byte[] Receive(boolean monitor) throws IOException, InterruptedException,TimeoutException{
+    private byte[] Receive() throws IOException, InterruptedException,TimeoutException{
         //Get header
         
         byte[] header = new byte[4];
@@ -180,7 +180,7 @@ class UDPClient{
                     //Upon subscription success, endtime is updated and proceeds to listen for update.
                     do{
                         try{
-                        byte[] update = udpclient.Receive(true);
+                        byte[] update = udpclient.Receive();
                         int length= update.length;
                         
                         int index = 0;
