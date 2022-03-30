@@ -24,3 +24,14 @@ Then, the client can be started with command:
 ```sh
 java client.UDPClient <ip> <port> <failurerate> <timeout> <max timeout> <mode>
 ```
+ip          : Server's IP Address
+
+port        : port number
+
+failureRate : failure rate in percentage
+
+timeout     : timeout duration (milliseconds)
+
+max timeout : Maximum timeout before exiting program (milliseconds)
+
+mode        : modes for invocation semantics, 0 for maybe and 1 for at-least-once/at-most-once
