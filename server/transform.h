@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cstring>
+#include <iostream>
 
 /* 
     All of the data transformation functions below are based on the big-endian byte order

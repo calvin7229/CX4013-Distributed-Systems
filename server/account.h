@@ -2,6 +2,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 enum Currency {
     SGD,
@@ -22,15 +23,15 @@ class Account {
 
         std::string getName();
         std::string getPassword();
-        std::string getCurrencyString();
         Currency getCurrency();
         static Currency getCurrency(int index);
         static int getCurrencyIndex(Currency currency);
+        static std::string getCurrencyString(Currency currency);
 
         float getBalance();
         int getAccountNumber();     
 
         void changePassword(std::string newPassword);
         std::pair<Currency, float> depositMoney(float amount);
-        std::pair<Currency, float> withdrawMoney(float amount);        
+        std::pair<Currency, float> withdrawMoney(float amount);      
 };

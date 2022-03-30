@@ -1,5 +1,7 @@
 #pragma once
 
+#include <climits>
+
 namespace constants {
     constexpr int   CHAR_SIZE   {1};
     constexpr int   INT_SIZE    {4};
