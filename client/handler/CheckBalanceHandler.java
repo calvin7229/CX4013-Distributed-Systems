@@ -7,6 +7,13 @@ import client.Constants;
 import client.Utils;
 
 public class CheckBalanceHandler extends Handler{
+    /**
+     * Execute service and return package
+     * @param scanner
+     * @param id
+     * @return {@code byte[]} request package to be sent to server
+     * @throws UnsupportedEncodingException
+     */
     @Override
     public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Check Account Balance:");
@@ -65,6 +72,13 @@ public class CheckBalanceHandler extends Handler{
 
         return packageByte;
     }
+    /**
+     * Handle the response from the server
+     * @param response from the server
+     * @throws IOException
+     * 
+     * 
+     */
     @Override
     public void handleResponse(byte[] response) throws IOException{
         int index = 0;

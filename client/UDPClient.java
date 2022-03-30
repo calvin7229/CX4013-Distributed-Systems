@@ -40,7 +40,7 @@ class UDPClient{
         do{
             try{
                 this.Send(packageByte);
-                response = this.Receive(false);
+                response = this.Receive();
                 break;
             }catch(SocketTimeoutException e){
             System.out.printf("Timeout!");
@@ -98,19 +98,23 @@ class UDPClient{
         return response;
 
     }
-
-    //@TODO settings
-    //private void Settings()
+    /**
+     * 
+     * Main Driver Function
+     */
     public static void main(String[] args) throws Exception{
         
-        UDPClient udpclient = new UDPClient("10.27.248.51",8888);
-        // udpclient.failrate = Float.parseFloat(args[0]);
-        // udpclient.setTimeout(Integer.parseInt(args[1]));
-        // udpclient.maxTimeout = Integer.parseInt(args[2]);
-        udpclient.failrate = 0;
-        udpclient.setTimeout(1000);
-        udpclient.maxTimeout = 5;
+        
+        String ip = args[0];
+        int port = Integer.parseInt(args[1]);
 
+        UDPClient udpclient = new UDPClient(ip,port);
+        udpclient.failrate = Float.parseFloat(args[2]);
+        udpclient.setTimeout(Integer.parseInt(args[3]));
+        udpclient.maxTimeout = Integer.parseInt(args[4]);
+        udpclient.seminvo = Integer.parseInt(args[5]);
+
+        
         boolean exit = false;
         while(!exit){
             System.out.println(
@@ -134,7 +138,7 @@ class UDPClient{
             int currID = udpclient.getID();
             boolean send= true;
             Handler handler = null;
-
+            //Create handler based on selection
             switch (selection){
                 
                 case 1:
@@ -185,15 +189,10 @@ class UDPClient{
                         
                         int index = 0;
                         //update message length
-                        //int length = Utils.unmarshalInteger(update, index);
-                        //index+=Constants.INT_SIZE;
-                        //update message
-                        System.out.println(length);
                         String message = Utils.unmarshalString(update, index,index+length);
                         System.out.println(message);
                         }
                         catch(SocketTimeoutException e){
-                            //System.out.println("Timeout!");
                             continue;
                         }
                     } while(Instant.now().getEpochSecond()<handler.getEndTime());

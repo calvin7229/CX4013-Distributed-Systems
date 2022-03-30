@@ -1,10 +1,12 @@
 package client;
 
-import java.io.*;
-import java.lang.*;
-import java.nio.ByteBuffer;
-import java.util.*;
 
+import java.nio.ByteBuffer;
+
+
+/**
+ * Utility function for marshalling and unmarshalling data
+ */
 public class Utils {
     public static void marshal(int n,  byte[] data, int index) {
         data[index] = (byte)(n >> 24);
@@ -30,15 +32,6 @@ public class Utils {
     }  
 
     public static void marshal(float f, byte[] data, int index) {
-        int n = getDecimal(Integer.parseInt(Integer.toBinaryString(Float.floatToRawIntBits(f)),2));
-        // System.out.println(f);
-        // System.out.println(Float.floatToRawIntBits(f));
-
-        // System.out.println(n);
-        // data[index] = (byte)(n >> 24);
-        // data[index+1] = (byte)(n >> 16);
-        // data[index+2] = (byte)(n >> 8);
-        // data[index+3] = (byte)(n);
         byte[] b = ByteBuffer.allocate(Constants.FLOAT_SIZE).putFloat(f).array();
         for (int i=0;i<4;i++){
             data[index+i] = b[i];
