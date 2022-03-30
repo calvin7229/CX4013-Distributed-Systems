@@ -10,7 +10,9 @@ Then, the server can be started by running command:
 ./main <port> <mode> <failureRate>
 ```
 port        : port number
+
 mode        : modes for invocation semantics, 0 for at-least-once and 1 for at-most-once
+
 failureRate : failure rate in percentage
 
 The server must be running before starting client program. To compile the Java code, run command:
