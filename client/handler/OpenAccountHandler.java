@@ -117,7 +117,7 @@ public class OpenAccountHandler extends Handler {
             System.out.println("Open Account Failed");
             int errorsize = Utils.unmarshalInteger(response, index);
             index += Constants.INT_SIZE;
-            System.out.println(errorsize);
+            //System.out.println(errorsize);
             String error = Utils.unmarshalString(response, index, index+errorsize);
             System.out.println(error);
         }
