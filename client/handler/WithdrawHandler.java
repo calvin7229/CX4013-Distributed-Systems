@@ -7,7 +7,13 @@ import client.Constants;
 import client.Utils;
 
 public class WithdrawHandler extends Handler {
-    
+    /**
+     * Get input from user and execute service
+     * @param scanner
+     * @param id
+     * @return {@code byte[]} request package to be sent to server
+     * @throws UnsupportedEncodingException
+     */
     @Override
     public byte[] executeService(Scanner scanner, int id)throws UnsupportedEncodingException{
         System.out.println("Withdraw money from account:");
@@ -109,7 +115,7 @@ public class WithdrawHandler extends Handler {
     public void handleResponse(byte[] response) throws IOException{
         int index = 0;
         int id = Utils.unmarshalInteger(response, index);
-        System.out.println(id);
+        //System.out.println(id);
         index += Constants.INT_SIZE;
         String status = Utils.unmarshalString(response, index,index+1);
         //System.out.println(index);

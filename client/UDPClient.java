@@ -87,14 +87,6 @@ class UDPClient{
         DatagramPacket responsePacket = new DatagramPacket(response, response.length);
         this.clientSocket.receive(responsePacket);
         response = responsePacket.getData();
-        //Debug received packet
-        StringBuilder sb = new StringBuilder();
-        sb.append("[ ");
-        for (byte b : response){
-            sb.append(String.format("0x%02X ", b));
-        }
-        sb.append("]");
-        System.out.println(sb.toString());
         return response;
 
     }

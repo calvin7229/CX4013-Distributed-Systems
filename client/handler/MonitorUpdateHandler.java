@@ -68,7 +68,6 @@ public class MonitorUpdateHandler extends Handler{
     public void handleResponse(byte[] response) throws IOException{
         int index = 0;
         int id = Utils.unmarshalInteger(response, index);
-        System.out.println(id);
         index += Constants.INT_SIZE;
         String status = Utils.unmarshalString(response, index,index+1);
         //System.out.println(index);
@@ -78,7 +77,7 @@ public class MonitorUpdateHandler extends Handler{
             System.out.println("Subscription failed");
             int errorsize = Utils.unmarshalInteger(response, index);
             index += Constants.INT_SIZE;
-            System.out.println(errorsize);
+            //System.out.println(errorsize);
             String error = Utils.unmarshalString(response, index, index+errorsize);
             System.out.println(error);
         }
