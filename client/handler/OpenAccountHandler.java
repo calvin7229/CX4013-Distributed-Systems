@@ -105,8 +105,8 @@ public class OpenAccountHandler extends Handler {
     public void handleResponse(byte[] response) throws IOException{
         int index = 0;
         int id = Utils.unmarshalInteger(response, index);
-        System.out.println("ID is ");
-        System.out.println(id);
+        //System.out.println("ID is ");
+        //System.out.println(id);
         index += Constants.INT_SIZE;
         String status = Utils.unmarshalString(response, index,index+1);
         //System.out.println(index);
