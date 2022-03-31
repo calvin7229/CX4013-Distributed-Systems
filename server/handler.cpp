@@ -105,6 +105,12 @@ void Handler::answer(UDPServer& server, char* header, char* body, int bodySize) 
     std::cout << "Generated Failute Rate = " << rand * 100 << "%" << std::endl;
     
     if(rand > this->failureRate) {
+        // for (int i = 0; i < 4; i++) {
+        //     std::cout << "bin at index " << i << ", val: " << std::endl;
+        //     printB(*(body+i));
+        //     std::cout << std::endl;
+        // }
+
         // Send header
         server.send(header, HEADER_SIZE);
 
@@ -227,9 +233,9 @@ void Handler::serviceOpen(UDPServer& server, char* info, int requestID) {
             std::string s = std::string(body, bodySize);
 
             cache[{clientAddr, requestID}] = s;
-
-            answer(server, header, body, bodySize);
         }
+
+        answer(server, header, body, bodySize);
     }
 }
 
@@ -329,9 +335,9 @@ void Handler::serviceClose(UDPServer& server, char* info, int requestID) {
             std::string s = std::string(body, bodySize);
 
             cache[{clientAddr, requestID}] = s;
-
-            answer(server, header, body, bodySize);
         }
+
+        answer(server, header, body, bodySize);
     }
 }
 
@@ -451,9 +457,9 @@ void Handler::serviceDeposit(UDPServer& server, char* info, int requestID) {
             std::string s = std::string(body, bodySize);
 
             cache[{clientAddr, requestID}] = s;
-
-            answer(server, header, body, bodySize);
         }
+
+        answer(server, header, body, bodySize);
     }
 }
 
@@ -573,9 +579,9 @@ void Handler::serviceWithdraw(UDPServer& server, char* info, int requestID) {
             std::string s = std::string(body, bodySize);
 
             cache[{clientAddr, requestID}] = s;
-
-            answer(server, header, body, bodySize);
         }
+
+        answer(server, header, body, bodySize);
     }
 }
 
@@ -697,9 +703,9 @@ void Handler::serviceTransfer(UDPServer& server, char* info, int requestID) {
             std::string s = std::string(body, bodySize);
 
             cache[{clientAddr, requestID}] = s;
-
-            answer(server, header, body, bodySize);
         }
+
+        answer(server, header, body, bodySize);
     }
 }
 
@@ -809,9 +815,9 @@ void Handler::serviceBalance(UDPServer& server, char* info, int requestID) {
             std::string s = std::string(body, bodySize);
 
             cache[{clientAddr, requestID}] = s;
-
-            answer(server, header, body, bodySize);
         }
+
+        answer(server, header, body, bodySize);
     }
 }
 
@@ -867,9 +873,9 @@ void Handler::serviceSubscribe(UDPServer& server, char* info, int requestID) {
             std::string s = std::string(body, bodySize);
 
             cache[{clientAddr, requestID}] = s;
-
-            answer(server, header, body, bodySize);
         }
+
+        answer(server, header, body, bodySize);
     }
 }
 
